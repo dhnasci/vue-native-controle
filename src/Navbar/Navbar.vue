@@ -1,16 +1,28 @@
 <template>
+<TouchableWithoutFeedback :onPress="handleMenu">
   <view class="main-navbar">
-      <StatusBar backgroundColor="teal" barStyle="light-content" />
-      <text class="navbar-title">Controle Bem</text>
+      <StatusBar backgroundColor="teal" barStyle="light-content" hidden />
+      
+        <image :source="require('../../assets/menu1.png')" />
+        <text class="navbar-title">Controle Bem</text>
+      
   </view>
+  </TouchableWithoutFeedback>
 </template>
 
 <script>
 import { StatusBar } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export default {
     components: {
-        StatusBar
+        StatusBar,
+        TouchableWithoutFeedback
+    },
+    methods: {
+        handleMenu() {
+            console.log('clicou no menu');
+        }
     }
 }
 </script>
@@ -20,9 +32,11 @@ export default {
     background-color: teal;
     height: 60px;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
     padding-bottom: 10px;
+    padding-left: 10px;
 }
 
 .navbar-title {
