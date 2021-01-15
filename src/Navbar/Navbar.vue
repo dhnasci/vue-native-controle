@@ -1,6 +1,6 @@
 <template>
   <view>
-    <TouchableWithoutFeedback :onPress="handleMenu">
+    <TouchableWithoutFeedback :onPress="callMenuDrawer">
         <view class="main-navbar" >
             <StatusBar backgroundColor="#5C6BC0" barStyle="light-content" />
             <image :source="require('../../assets/menu1.png')" />
@@ -21,9 +21,9 @@ export default {
         TouchableWithoutFeedback
     },
     methods: {
-        handleMenu() {
-            console.log('vue-controle-bem > clicou no menu');
-
+        callMenuDrawer() {
+            console.log('controle-bem callMenuDrawer');
+            this.$emit('openDrawer') ;
         }
     }
 }

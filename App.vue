@@ -1,6 +1,6 @@
 <template>
      <DrawerLayoutAndroid
-        ref="drawer"
+        ref="drawer" 
         drawerPosition="left" 
         drawerBackgroundColor="#E5E5EF"
       >
@@ -33,7 +33,7 @@
         </template>
       </view>
       <view class="container" >
-        <Navbar />
+        <Navbar @openDrawer="handleMenu" />
         <view class="home-container">
           <view class="home-container-row">
             <image :source="require('./assets/qr_code_big.png')" />
@@ -73,19 +73,17 @@ export default {
     DrawerLayoutAndroid
   },
   created() {
-    console.log('controle-bem ');
-    console.log('controle-bem refs: ', this.$refs);
-    console.log(this.getTextStyleDrawer());
+    console.log('controle-bem created');  
+
+  },
+  mounted() {
+    console.log('controle-bem mounted refs: ', this.$refs.drawer);
+
   },
   methods: {
-    // don't work in style of text drawer
-    getTextStyleDrawer() {
-      const estilo = [
-        "fontSize:14", 
-        "color: 'red'",
-        "fontWeight:'bold'"
-      ]
-      return '{'+ lodash.toString(estilo) + '}';
+     handleMenu() {
+        console.log('vue-controle-bem > clicou no menu');
+        this.$refs.drawer.openDrawer();
     }
   }
 }
@@ -99,10 +97,6 @@ export default {
   color:#3F51B5;
   font-weight: bold;
   font-size: 18;
-}
-.texto-drawer {
-  color: brown;
-
 }
 .home-container{
   padding-top: 60px;
