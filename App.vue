@@ -2,6 +2,7 @@
      <DrawerLayoutAndroid
         ref="drawer"
         drawerPosition="left" 
+        drawerBackgroundColor="#E5E5EF"
       >
       <view render-prop-fn="renderNavigationView">
         <template>
@@ -33,8 +34,28 @@
       </view>
       <view class="container" >
         <Navbar />
-        <text class="text-color-primary">Controle Bem App</text>
-        <Lista />
+        <view class="home-container">
+          <view class="home-container-row">
+            <image :source="require('./assets/qr_code_big.png')" />
+            <image :source="require('./assets/transfer_within_a_station_big.png')" />
+          </view>
+          <view class="home-container-row">
+              <text class="text-color-primary">Meus Ativos</text>
+              <text class="text-color-primary">Transferência</text>
+          </view>
+          <view class="home-container-row home-container-row-spacer">
+            <image :source="require('./assets/home_repair_service_big.png')" />
+            <image :source="require('./assets/inventory_big.png')" />
+          </view>
+          <view class="home-container-row">
+              <text class="text-color-primary">Manutenção</text>
+              <text class="text-color-primary">Inventário</text>
+          </view>
+          <view class="home-container-row home-container-row-spacer">
+              <image :source="require('./assets/inventario.png')" />
+          </view>
+           
+        </view>
       </view>
      </DrawerLayoutAndroid>
 </template>
@@ -75,11 +96,25 @@ export default {
   background-color: white;
 }
 .text-color-primary {
-  color: blue;
+  color:#3F51B5;
+  font-weight: bold;
+  font-size: 18;
 }
 .texto-drawer {
   color: brown;
 
+}
+.home-container{
+  padding-top: 60px;
+}
+.home-container-row {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.home-container-row-spacer {
+  padding-top: 60px;
 }
 
 </style>
