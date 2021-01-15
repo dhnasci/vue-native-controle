@@ -1,13 +1,14 @@
 <template>
-<TouchableWithoutFeedback :onPress="handleMenu">
-  <view class="main-navbar">
-      <StatusBar backgroundColor="teal" barStyle="light-content" hidden />
-      
-        <image :source="require('../../assets/menu1.png')" />
-        <text class="navbar-title">Controle Bem</text>
-      
+  <view>
+    <TouchableWithoutFeedback :onPress="handleMenu">
+        <view class="main-navbar" >
+            <StatusBar backgroundColor="teal" barStyle="light-content" />
+            <image :source="require('../../assets/menu1.png')" />
+            <text class="navbar-title">Controle Bem</text>
+        </view>
+    </TouchableWithoutFeedback>
   </view>
-  </TouchableWithoutFeedback>
+  
 </template>
 
 <script>
@@ -21,7 +22,8 @@ export default {
     },
     methods: {
         handleMenu() {
-            console.log('clicou no menu');
+            console.log('vue-controle-bem > clicou no menu');
+
         }
     }
 }
