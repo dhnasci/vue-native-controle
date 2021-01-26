@@ -3,7 +3,7 @@
     <TouchableWithoutFeedback :onPress="callMenuDrawer">
         <view class="main-navbar" >
             <StatusBar backgroundColor="#5C6BC0" barStyle="light-content" />
-            <image :source="require('../../assets/menu1.png')" />
+            <image :source="require('./../assets/menu1.png')" />
             <text class="navbar-title">Controle Bem</text>
         </view>
     </TouchableWithoutFeedback>

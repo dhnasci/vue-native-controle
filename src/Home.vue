@@ -65,7 +65,7 @@
 
 <script>
 import Navbar from './src/Navbar/Navbar.vue'
-import Lista from './src/Lista.vue';
+import Lista from './src/Lista.vue'
 import { DrawerLayoutAndroid } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
@@ -75,6 +75,11 @@ export default {
     Lista, 
     DrawerLayoutAndroid, 
     TouchableWithoutFeedback
+  },
+   props: { 
+    navigation: {
+        type: Object
+        }
   },
   created() {
     console.log('controle-bem created');  

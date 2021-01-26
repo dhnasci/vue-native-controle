@@ -6,14 +6,28 @@
         <view class="container-row">
             <text class="text-label-login">Usuário </text>
             <text-input
-                :style="{height: 27, width: 134, borderColor: '#C4C4C4', borderWidth: 1}"
+                :style="{
+                    height: 27, 
+                    width: 134, 
+                    borderColor: 'gray', 
+                    backgroundColor:'#C4C4C4', 
+                    borderWidth: 1,
+                    marginLeft: 16
+                    }"
                 v-model="usuario"
              />
         </view>
         <view class="container-row-senha">
             <text class="text-label-login">Senha </text>
              <text-input
-                :style="{height: 27, width: 134, borderColor: 'gray', borderWidth: 1}"
+                :style="{
+                    height: 27, 
+                    width: 134, 
+                    borderColor: 'gray', 
+                    backgroundColor: '#C4C4C4',  
+                    borderWidth: 1,
+                    marginLeft: 29
+                    }"
                 v-model="senha"
              />
         </view>
@@ -33,6 +47,11 @@
 
 <script>
 export default {
+    props: {
+        navigation: {
+        type: Object
+        }
+    },
     data () {
         return { 
             usuario: '', 
@@ -51,6 +70,7 @@ export default {
             console.log("vue-controle-bem > Do Login pressed");
             console.log("vue-controle-bem > ", this.usuario);
             console.log("vue-controle-bem > ", this.senha);
+            this.navigation.navigate("Home");
         },
         doEsqueciSenha() {
             console.log("vue-controle-bem > Do Esqueci Senha");
