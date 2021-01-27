@@ -20,6 +20,7 @@
         <view class="container-row-senha">
             <text class="text-label-login">Senha </text>
              <text-input
+                text-content-type="password"
                 :style="{
                     height: 27, 
                     width: 134, 

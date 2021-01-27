@@ -31,10 +31,17 @@
 
 <script>
 export default {
+    props: {
+        navigation: {
+        type: Object
+        }
+    },
     methods: {
 
         callHome() {
-        console.log('vue-controle-bem: clicou em Home no drawer');
+            console.log('vue-controle-bem: clicou em Home no drawer');
+            this.navigation.navigate('Home');
+            this.navigation.closeDrawer();
         }
   }
 }
