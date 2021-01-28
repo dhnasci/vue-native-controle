@@ -24,7 +24,8 @@
     "vue-native-core": "0.2.0",
     "vue-native-helper": "0.2.0",
     "vue-native-router": "^0.2.0",
-    "expo-font": "~8.4.0"
+    "expo-font": "~8.4.0",
+    "@react-native-picker/picker": "1.9.2"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
