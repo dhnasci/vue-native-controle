@@ -1,9 +1,11 @@
 <template>
+	<root>
     <app-navigator></app-navigator>
+	</root>
 </template>
 
 <script>
-
+import { Root } from "native-base";
 import Vue from "vue-native-core";
 import { VueNativeBase } from "native-base";
 
@@ -13,6 +15,7 @@ Vue.use(VueNativeBase);
 import ListaScreen from './src/Lista.vue'
 import LoginScreen from './src/Usuarios/Login.vue'
 import EsqueciSenha from './src/Usuarios/EsqueciSenha.vue'
+import ControleUsuarios from './src/Usuarios/ControleUsuarios.vue'
 import HomeScreen from './src/HomeNovo.vue'
 import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
@@ -29,7 +32,8 @@ const DrawerNavigator = createDrawerNavigator(
     Lista: ListaScreen,
     Login: LoginScreen,
     Ativos: ControleAtivos,
-    EsqueciSenha
+		EsqueciSenha,
+		ControleUsuarios
   },
   {
     initialRouteName: 'Login',
@@ -43,7 +47,8 @@ const StackNavigator = createStackNavigator(
     Lista: ListaScreen,
     Home: HomeScreen,
     Login: LoginScreen,
-    Ativos: ControleAtivos
+		Ativos: ControleAtivos,
+		ControleUsuarios
   },
   {
     initialRouteName: "Drawer",
@@ -54,7 +59,7 @@ const StackNavigator = createStackNavigator(
 const AppNavigator = createAppContainer(StackNavigator);
 
 export default {
-  components: { AppNavigator },
+  components: { Root, AppNavigator },
 }
 </script>
 

@@ -2,7 +2,7 @@
     <view>
       <Navbar @openDrawer="handleMenu" />
       <view class="home-container">
-        <view class="drawer-text">
+                <view class="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; "> 
             Filtro de Ativos </text>
         </view>
@@ -23,13 +23,7 @@
                 mode="dropdown"
                 :selectedValue="selecionado"
                 :onValueChange="callStatus"
-                :itemStyle="{
-                  backgroundColor: '#d3d3d3',
-                  marginLeft: 0,
-                  paddingLeft: 40
-          }"
-                :itemTextStyle="{ color: '#788ad2' }"
-              >
+                >
                 <item label="ATIVO" value="ativo" />
                 <item label="EM MANUTENÇÃO" value="manutencao" />
                 <item label="BAIXADO" value="baixado" />
@@ -45,45 +39,40 @@
           <image :source="require('./../../assets/add_box.png')" /> 
         </view>
          <view>
-          <nb-card :style="{marginLeft: 19, marginRight: 16, marginTop: 26}">
-            <nb-card-item header :style="{paddingBottom:1}"  >
-              <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, fontWeight: 'bold', color: '#3F51B5'}">
-                Computador Easy Pc</nb-text> 
-                
-            </nb-card-item>
-            <nb-card-item  :style="{paddingTop:0, paddingBottom:0, justifyContent: 'space-between'}">
-              <nb-text :style="{fontFamily: 'Lato', fontSize: 11, color: 'black'}">
-              Dell </nb-text>
-              <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, color: 'black'}">
-              ATIVO </nb-text>
-            </nb-card-item>
-            <nb-card-item  :style="{ paddingBottom:0,justifyContent: 'space-around'}" >
-              
-                <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                  7898109243137
-                </nb-text>
-                <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                  R$ 3091,58
-                </nb-text>
-                      
-            </nb-card-item>
-            <nb-card-item :style="{paddingTop:0, paddingBottom:10,justifyContent: 'space-around'}" >
-                <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                  Nota Fiscal 23456
-                </nb-text>
-                <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                  10/10/2020
-                </nb-text>
-                      
-            </nb-card-item>
-            <nb-card-item :style="{paddingTop:0}">
-              <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                Responsável Joana Dark</nb-text>
-            </nb-card-item>
-          </nb-card>
+           <nb-card :style="{marginLeft: 19, marginRight: 16, marginTop: 26}">
+                <nb-card-item header :style="{paddingBottom:1}"  >
+                  <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, fontWeight: 'bold', color: '#3F51B5'}">
+                    Computador Easy Pc</nb-text> 
+                </nb-card-item>
+                <nb-card-item  :style="{paddingTop:0, paddingBottom:0, justifyContent: 'space-between'}">
+                  <nb-text :style="{fontFamily: 'Lato', fontSize: 11, color: 'black'}">
+                  Dell </nb-text>
+                  <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, color: 'black'}">
+                  ATIVO </nb-text>
+                </nb-card-item>
+                <nb-card-item  :style="{ paddingBottom:0,justifyContent: 'space-around'}" >
+                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                      7898109243137
+                    </nb-text>
+                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                      R$ 3091,58
+                    </nb-text>
+                </nb-card-item>
+                <nb-card-item :style="{paddingTop:0, paddingBottom:10,justifyContent: 'space-around'}" >
+                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                      Nota Fiscal 23456
+                    </nb-text>
+                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                      10/10/2020
+                    </nb-text>
+                </nb-card-item>
+                <nb-card-item :style="{paddingTop:0}">
+                  <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                    Responsável Joana Dark</nb-text>
+                </nb-card-item>
+              </nb-card>
          </view>
-      </view>
-      
+       </view>
     </view>
 </template>
 
@@ -110,7 +99,6 @@ export default {
     Text,
     Body,
     Container
-
   },
   props: { 
     navigation: {

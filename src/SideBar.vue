@@ -23,9 +23,12 @@
         <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
         <image :source="require('./../assets/inventory.png')" /> 
         Controle de Inventário </text>
-        <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
-        <image :source="require('./../assets/account_circle.png')" />
-        Usuários </text>
+        <touchable-opacity :onPress="controleUsuarios">
+            <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
+                <image :source="require('./../assets/account_circle.png')" />
+                 Usuários 
+            </text>
+        </touchable-opacity>
     </view>
 </template>
 
@@ -41,6 +44,10 @@ export default {
         callHome() {
             console.log('vue-controle-bem: clicou em Home no drawer');
             this.navigation.navigate('Home');
+            this.navigation.closeDrawer();
+        },
+        controleUsuarios() {
+            this.navigation.navigate('ControleUsuarios');
             this.navigation.closeDrawer();
         }
   }
