@@ -12,6 +12,7 @@ Vue.use(VueNativeBase);
 
 import ListaScreen from './src/Lista.vue'
 import LoginScreen from './src/Usuarios/Login.vue'
+import EsqueciSenha from './src/Usuarios/EsqueciSenha.vue'
 import HomeScreen from './src/HomeNovo.vue'
 import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
@@ -27,7 +28,8 @@ const DrawerNavigator = createDrawerNavigator(
     Home: HomeScreen,
     Lista: ListaScreen,
     Login: LoginScreen,
-    Ativos: ControleAtivos
+    Ativos: ControleAtivos,
+    EsqueciSenha
   },
   {
     initialRouteName: 'Login',

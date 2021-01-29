@@ -3,7 +3,8 @@
       <Navbar @openDrawer="handleMenu" />
       <view class="home-container">
         <view class="drawer-text">
-          <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; "> Filtro de Ativos </text>
+          <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; "> 
+            Filtro de Ativos </text>
         </view>
         <view class="filter-box">
           <view class="filter-box-row">

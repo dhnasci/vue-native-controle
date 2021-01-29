@@ -75,6 +75,7 @@ export default {
         },
         doEsqueciSenha() {
             console.log("vue-controle-bem > Do Esqueci Senha");
+            this.navigation.navigate("EsqueciSenha");
         }
     }
 }
