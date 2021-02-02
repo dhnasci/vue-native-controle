@@ -9,11 +9,29 @@
         </view>
 				<view class="header-list">
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Nome</text>
-					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Login</text>
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Celular</text>
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Perfil</text>
 					
 				</view>
+				<nb-list v-for="usuario in usuarios" :key="usuario.login">
+           <nb-list-item avatar >
+            <nb-left>
+              <touchable-opacity :on-press="() => { console.log('apertou '+ usuario.nome); }">
+                <nb-thumbnail small square :source="usuario.foto" />
+              </touchable-opacity>
+            </nb-left>
+            <nb-body>
+              <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
+              <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
+              
+            </nb-body>
+            <nb-right>
+              <nb-text note>{{usuario.perfil}}</nb-text>
+            </nb-right>
+          </nb-list-item>
+     
+      </nb-list>
+     
 			</view>
 	</view>
     
@@ -23,10 +41,51 @@
 import React from "react";
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
+import { Content, List, ListItem, Text, Left, Right, Icon } from 'native-base';
+import dirceu from './../../assets/faces/pierreperson.png';
+import flavio from './../../assets/faces/donaldperson.png';
+import sheila from './../../assets/faces/greta.png';
+import sonia from './../../assets/faces/girl.png';
 
 export default {
+  data() {
+    return { 
+      usuarios: [
+        { nome: 'Dirceu', 
+          sobrenome: 'Henrique', 
+          telefone: '92 98135-3776',
+          perfil: 'Administrador',
+          foto: dirceu,
+          login: 'dirceu.henrique'
+          },
+        { nome: 'Flavio', 
+          sobrenome: 'Rodhen', 
+          telefone: '92 98886-7744',
+          perfil: 'Líder',
+          foto: flavio,
+          login: 'flavio.rodhen'
+          },
+        { nome: 'Sheila', 
+          sobrenome: 'Cruz', 
+          telefone: '11 97125-1125',
+          perfil: 'Controlador',
+          foto: sheila,
+          login: 'sheila.cruz'
+          },
+        { nome: 'Sonia', 
+          sobrenome: 'Maria', 
+          telefone: '92 98886-7744',
+          perfil: 'Auditor',
+          foto: sonia,
+          login: 'sonia.maria'
+          },
+
+      ],
+    }
+  },
 	components: {
-		Navbar
+		Navbar,
+		Content, List, ListItem, Text, Left, Right, Icon
 	},
 	props: { 
     navigation: {
@@ -40,6 +99,9 @@ export default {
     console.log('vue-controle-bem mounted > Controle Usuarios');
   },
   methods: {
+    getItem() {
+      console.log('vue-controle-bem getItem > ', usuario.nome)
+    },
     handleMenu() {
       this.navigation.openDrawer();
     },
@@ -54,7 +116,7 @@ export default {
         });
         this.isAppReady = true;
       } catch (error) {
-        console.log("some error occured", error);
+        console.log("some error occurred", error);
         this.isAppReady = true;
       }
     }
