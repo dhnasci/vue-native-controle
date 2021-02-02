@@ -12,33 +12,32 @@
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Celular</text>
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Perfil</text>
 					
-				</view>
-				<nb-list v-for="usuario in usuarios" :key="usuario.login">
-           <nb-list-item avatar >
-            
-            <nb-body>
-              <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
-              <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
-              
-            </nb-body>
-            <nb-right>
-              <nb-text note>{{usuario.perfil}}</nb-text>
-               <touchable-opacity :on-press="() => { console.log('apertou '+ usuario.nome); }">
+				</view>  
+        <scroll-view>    
+            <nb-list v-for="usuario in usuarios" :key="usuario.login">
+              <nb-list-item avatar >
                 
-                <nb-icon type="MaterialIcons" ref="myicons" name="add_box" size="20"  />
-              </touchable-opacity>
-            </nb-right>
-          </nb-list-item>
-     
-      </nb-list>
-     
+                <nb-body>
+                  <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
+                  <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
+                  
+                </nb-body>
+                <nb-right>
+                  <nb-text note>{{usuario.perfil}}</nb-text>
+                  <touchable-opacity :on-press="editarUsuario">
+                    <image :source="require('../../assets/loupe.png')" /> 
+                  </touchable-opacity>
+                </nb-right>
+              </nb-list-item>
+        
+          </nb-list>
+        </scroll-view>
 			</view>
 	</view>
     
 </template>
 
 <script>
-import React from "react";
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
 import { Content, List, ListItem, Text, Left, Right, Icon } from 'native-base';
@@ -79,7 +78,34 @@ export default {
           foto: sonia,
           login: 'sonia.maria'
           },
-
+ { nome: 'Dirceu', 
+          sobrenome: 'Henrique', 
+          telefone: '92 98135-3776',
+          perfil: 'Administrador',
+          foto: dirceu,
+          login: 'dirceu.henrique1'
+          },
+        { nome: 'Flavio', 
+          sobrenome: 'Rodhen', 
+          telefone: '92 98886-7744',
+          perfil: 'Líder',
+          foto: flavio,
+          login: 'flavio.rodhen1'
+          },
+        { nome: 'Sheila', 
+          sobrenome: 'Cruz', 
+          telefone: '11 97125-1125',
+          perfil: 'Controlador',
+          foto: sheila,
+          login: 'sheila.cruz1'
+          },
+        { nome: 'Sonia', 
+          sobrenome: 'Maria', 
+          telefone: '92 98886-7744',
+          perfil: 'Auditor',
+          foto: sonia,
+          login: 'sonia.maria1'
+          },
       ],
     }
   },
@@ -96,9 +122,14 @@ export default {
     this.loadFonts();
   },
   mounted() {
-    console.log('vue-controle-bem mounted > Controle Usuarios ', this.$refs.myicons);
+    console.log('vue-controle-bem mounted > Controle Usuarios ');
   },
   methods: {
+    editarUsuario(login) {
+      console.log('vue-controle-bem upload ', login);
+      
+      this.navigation.navigate('EditarUsuario'); 
+    },
     getItem() {
       console.log('vue-controle-bem getItem > ', usuario.nome)
     },
