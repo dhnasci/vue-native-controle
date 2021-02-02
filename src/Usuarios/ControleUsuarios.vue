@@ -5,7 +5,7 @@
 				<view class="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
             Controle de Usuários </text>
-          <image :source="require('./../../assets/add_box.png')" /> 
+          <image :source="require('../../assets/add_box.png')" /> 
         </view>
 				<view class="header-list">
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Nome</text>
@@ -15,11 +15,7 @@
 				</view>
 				<nb-list v-for="usuario in usuarios" :key="usuario.login">
            <nb-list-item avatar >
-            <nb-left>
-              <touchable-opacity :on-press="() => { console.log('apertou '+ usuario.nome); }">
-                <nb-thumbnail small square :source="usuario.foto" />
-              </touchable-opacity>
-            </nb-left>
+            
             <nb-body>
               <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
               <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
@@ -27,6 +23,10 @@
             </nb-body>
             <nb-right>
               <nb-text note>{{usuario.perfil}}</nb-text>
+               <touchable-opacity :on-press="() => { console.log('apertou '+ usuario.nome); }">
+                
+                <nb-icon type="MaterialIcons" ref="myicons" name="add_box" size="20"  />
+              </touchable-opacity>
             </nb-right>
           </nb-list-item>
      
@@ -42,10 +42,10 @@ import React from "react";
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
 import { Content, List, ListItem, Text, Left, Right, Icon } from 'native-base';
-import dirceu from './../../assets/faces/pierreperson.png';
-import flavio from './../../assets/faces/donaldperson.png';
-import sheila from './../../assets/faces/greta.png';
-import sonia from './../../assets/faces/girl.png';
+import dirceu from '../../assets/faces/pierreperson.png';
+import flavio from '../../assets/faces/donaldperson.png';
+import sheila from '../../assets/faces/greta.png';
+import sonia from '../../assets/faces/girl.png';
 
 export default {
   data() {
@@ -85,7 +85,7 @@ export default {
   },
 	components: {
 		Navbar,
-		Content, List, ListItem, Text, Left, Right, Icon
+    Content, List, ListItem, Text, Left, Right, Icon
 	},
 	props: { 
     navigation: {
@@ -96,7 +96,7 @@ export default {
     this.loadFonts();
   },
   mounted() {
-    console.log('vue-controle-bem mounted > Controle Usuarios');
+    console.log('vue-controle-bem mounted > Controle Usuarios ', this.$refs.myicons);
   },
   methods: {
     getItem() {
@@ -112,7 +112,8 @@ export default {
           Roboto: require("../../fonts/Roboto-Bold.ttf"),
           RobotoReg: require("../../fonts/Roboto-Regular.ttf"),
           Nunito: require("../../fonts/NunitoSans-Bold.ttf"),
-          Lato: require("../../fonts/Lato-Regular.ttf")
+          Lato: require("../../fonts/Lato-Regular.ttf"),
+          MaterialIcons: require("../../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf")
         });
         this.isAppReady = true;
       } catch (error) {
