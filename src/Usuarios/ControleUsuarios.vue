@@ -58,48 +58,7 @@ export default {
     return { 
       usuarioSel: {
       },
-      usuarios: [
-        { nome: 'Dirceu', 
-          sobrenome: 'Henrique', 
-          cpf: '98135865082',
-          email: 'dirceu.vital@arkosolucoes.com.br',
-          ativo: true,
-          telefone: '92 98135-3776',
-          perfil: 'Administrador',
-          foto: dirceu,
-          login: 'dirceu.henrique'
-          },
-        { nome: 'Flavio', 
-          sobrenome: 'Rodhen', 
-          cpf: '47914461008',
-          email: 'flavio@email.com',
-          ativo: true,
-          telefone: '92 98886-7744',
-          perfil: 'Líder',
-          foto: flavio,
-          login: 'flavio.rodhen'
-          },
-        { nome: 'Sheila', 
-          sobrenome: 'Cruz',
-          cpf: '90838963072',
-          email: 'sheila@email.com',
-          ativo: true, 
-          telefone: '11 97125-1125',
-          perfil: 'Controlador',
-          foto: sheila,
-          login: 'sheila.cruz'
-          },
-        { nome: 'Sonia', 
-          sobrenome: 'Maria',
-          cpf: '34726625063',
-          email: 'sonia@email.com',
-          ativo: true, 
-          telefone: '92 98886-7744',
-          perfil: 'Auditor',
-          foto: sonia,
-          login: 'sonia.maria'
-          }
-      ],
+      usuarios: Store.state.usuarios
     }
   },
 	components: {
@@ -113,8 +72,14 @@ export default {
   },
   created() {
     this.loadFonts();
+    console.log('Controle Usuarios created');
+    const st = Store;
+    const _this = this;
+    
     this.navigation.addListener('willFocus', () => {
       console.log('ativou willFocus controle');
+      st.dispatch('listarUsuarios');
+      _this.usuarios = st.state.usuarios;
     } );
   },
   mounted() {
@@ -130,14 +95,6 @@ export default {
         console.log('erro1 :', error)
       }
       console.log('selecionado > ', Store.state.usuarioSelecionado);
-    },
-    goEdit() {
-      console.log('apertou button ', usuario.login)
-      try {
-        this.navigation.navigate('EditarUsuario'); 
-      } catch (error) {
-        console.log('erro2 :', error)
-      }
     },
     getItem() {
       console.log('vue-controle-bem getItem > ', usuario.nome);
