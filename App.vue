@@ -8,15 +8,16 @@
 import { Root } from "native-base";
 import Vue from "vue-native-core";
 import { VueNativeBase } from "native-base";
+import Store from './store'
 
 // registering all native-base components to the global scope of the Vue
 Vue.use(VueNativeBase);
 
 import ListaScreen from './src/Lista.vue'
 import LoginScreen from './src/Usuarios/Login.vue'
-import EsqueciSenha from './src/Usuarios/EsqueciSenha.vue'
-import ControleUsuarios from './src/Usuarios/ControleUsuarios.vue'
-import EditarUsuario from './src/Usuarios/EditarUsuario.vue'
+import EsqueciSenhaScreen from './src/Usuarios/EsqueciSenha.vue'
+import ControleUsuarioScreen from './src/Usuarios/ControleUsuarios.vue'
+import EditarUsuarioScreen from './src/Usuarios/EditarUsuario.vue'
 import HomeScreen from './src/HomeNovo.vue'
 import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
@@ -33,9 +34,9 @@ const DrawerNavigator = createDrawerNavigator(
     Lista: ListaScreen,
     Login: LoginScreen,
     Ativos: ControleAtivos,
-		EsqueciSenha,
-    ControleUsuarios, 
-    EditarUsuario
+		EsqueciSenha: EsqueciSenhaScreen,
+    ControleUsuarios: ControleUsuarioScreen, 
+    EditarUsuario: EditarUsuarioScreen,
   },
   {
     initialRouteName: 'Login',
@@ -50,7 +51,7 @@ const StackNavigator = createStackNavigator(
     Home: HomeScreen,
     Login: LoginScreen,
 		Ativos: ControleAtivos,
-		ControleUsuarios
+    ControleUsuarios: ControleUsuarioScreen
   },
   {
     initialRouteName: "Drawer",

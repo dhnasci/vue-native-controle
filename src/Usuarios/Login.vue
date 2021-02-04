@@ -3,60 +3,52 @@
         <view class="container-toolbar">
             <text class="text-color-login">Controle Bem</text>
         </view>
-        <view class="container-row">
-            <text class="text-label-login">Usuário </text>
-            <text-input
-                :style="{
-                    height: 27, 
-                    width: 134, 
-                    borderColor: 'gray', 
-                    backgroundColor:'#C4C4C4', 
-                    borderWidth: 1,
-                    marginLeft: 16
-                    }"
-                v-model="usuario"
-             />
-        </view>
-        <view class="container-row-senha">
-            <text class="text-label-login">Senha </text>
-             <text-input
-                text-content-type="password"
-                :style="{
-                    height: 27, 
-                    width: 134, 
-                    borderColor: 'gray', 
-                    backgroundColor: '#C4C4C4',  
-                    borderWidth: 1,
-                    marginLeft: 29
-                    }"
-                v-model="senha"
-             />
-        </view>
-        <view class="container-row-one-btn">
-            <touchable-opacity class="button-blue" :on-press="doLogin">
-                <text class="button-text">LOGIN</text>
-            </touchable-opacity>
-        </view>
-        <view class="container-row-one-btn">
-            <touchable-opacity class="link-esqueci-senha" :on-press="doEsqueciSenha">
-                <text class="text-label-login">Esqueci minha senha</text>
-            </touchable-opacity>
-        </view>
-    
+        <nb-content class="content-box">
+            <nb-form>
+                <nb-item inlinelabel class="container-row">
+                    <text class="text-label-login">Usuário</text>
+                    <nb-input v-model="usuario" />
+                </nb-item>
+                <nb-item class="container-row-senha">
+                    <text class="text-label-login">Senha </text>
+                    <nb-input secureTextEntry keyboard-type="numeric"  v-model="senha"  />
+                </nb-item>
+                <nb-item class="container-row-one-btn">
+                    <touchable-opacity class="button-blue" :on-press="doLogin">
+                        <text class="button-text">LOGIN</text>
+                    </touchable-opacity>
+                </nb-item>
+                <nb-item class="container-row-one-btn">
+                <touchable-opacity class="link-esqueci-senha" :on-press="doEsqueciSenha">
+                    <text class="text-link">Esqueci minha senha</text>
+                </touchable-opacity>
+                </nb-item>
+            </nb-form>
+        </nb-content>
     </view>
 </template>
 
 <script>
+
+import { Container, Content, Form, Item, Input } from "native-base";
+
 export default {
     props: {
         navigation: {
         type: Object
         }
     },
+    components: {
+        Container,
+        Content, 
+        Form, 
+        Item, 
+        Input 
+    },
     data () {
         return { 
-            usuario: '', 
-            senha: ''
+            usuario: undefined, 
+            senha: undefined
         }
     },    
     created () {
@@ -83,9 +75,10 @@ export default {
 
 <style>
     .container {
-        margin-top: 143px;
+        margin-top: 120px;
+        margin-bottom: 120px;
         width: 250px;
-        height: 330px;
+        height: 360px;
         background-color: #E5E5EF;
         margin-left: 55px;
         border-radius: 10px;
@@ -102,13 +95,17 @@ export default {
         border-top-right-radius: 10px;
     }
 
+    .content-box {
+        margin-right: 10px;
+    }
+
     .container-row {
-        margin-top: 36px;
+        margin-top: 30px;
         flex-direction: row;
     }
 
     .container-row-senha {
-        margin-top: 19px;
+       
         flex-direction: row;
     }
 
@@ -149,5 +146,12 @@ export default {
     .link-esqueci-senha {
         align-items: center;
         justify-content: center;
+    }
+
+    .text-link {
+        color: black;
+        font-weight: bold;
+        font-size: 15;
+        
     }
 </style>

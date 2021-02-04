@@ -10,16 +10,35 @@
         <nb-form>
             <nb-item inlineLabel>
                 <nb-label>Nome</nb-label>
-            <nb-input v-model="usuario.nome" />
-                </nb-item>
-                <nb-item inlineLabel last>
-                <nb-label>Senha</nb-label>
-                
-                <nb-input v-model="usuario.senha" secureTextEntry />
+                <nb-input v-model="usuario.nome" />
             </nb-item>
-            <nb-button rounded success :on-press="submit" >
-                <nb-text>Concluir</nb-text>
-            </nb-button>
+            <nb-item inlineLabel>
+                <nb-label>Sobrenome</nb-label>
+                <nb-input v-model="usuario.sobrenome" />
+            </nb-item>
+            <nb-item inlineLabel>
+                <nb-label>CPF</nb-label>
+                <nb-input v-model="usuario.cpf" keyboard-type="numeric" />
+            </nb-item>
+            <nb-item inlineLabel>
+                <nb-label>Telefone</nb-label>
+                <nb-input v-model="usuario.telefone" />
+            </nb-item>
+            <nb-item inlineLabel>
+                <nb-label>E-mail</nb-label>
+                <nb-input v-model="usuario.email" keyboard-type="email-address" />
+            </nb-item>
+            
+            <nb-card transparent>
+            <nb-card-item  class="container-row">
+                      <nb-button rounded success :on-press="submit" >
+                  <nb-text>Concluir</nb-text>
+              </nb-button>
+              <nb-button rounded primary :on-press="cancel" >
+                  <nb-text>Cancelar</nb-text>
+              </nb-button>
+            </nb-card-item>
+          </nb-card>
         </nb-form>
       </nb-content>
     </nb-container>
@@ -28,7 +47,8 @@
 <script>
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Container,  Content, Form, Item, Input, Label } from 'native-base';
+import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body } from 'native-base';
+import Store from '../../store'
 
 export default {
     components: {
@@ -38,7 +58,8 @@ export default {
         Form, 
         Item, 
         Input, 
-        Label
+        Label,
+        Card, CardItem, Text, Body
 	},
 props: { 
     navigation: {
@@ -47,20 +68,49 @@ props: {
   },
   data() {
       return{ 
-          usuario: { }
+          usuario: {
+            nome: '',
+            sobrenome: '',
+            cpf: '',
+            telefone: '',
+            email: '',
+            centroCusto: 'DTI',
+            perfil: 'Lider'
+          }
     }
   },
   created() {
     this.loadFonts();
+    console.log("vue-controle-bem Editar Usuarios >  created")
   },
   mounted() {
     console.log('vue-controle-bem mounted > Editar Usuarios ');
+    if (Store.state.usuarioSelecionado) {
+      console.log('vue-controle-bem....')
+      this.usuario = Store.state.usuarioSelecionado;
+    }
+  },
+  beforeUpdate() {
+    console.log('vue-controle-bem','beforeUpdate')
+    if (Store.state.usuarioSelecionado) {
+      this.usuario = Store.state.usuarioSelecionado;
+    }
+  },
+  beforeEnter() {
+    console.log('vue-controle-bem','beforeRouteEnter')
+    if (Store.state.usuarioSelecionado) {
+      this.usuario = Store.state.usuarioSelecionado;
+    }
   },
   methods: {
-      submit() {
-          console.log('clicou no submit...', this.usuario);
-          this.navigation.navigate('ControleUsuario');
-      },
+    submit() {
+        console.log('clicou no submit...', this.usuario);
+        this.navigation.navigate('ControleUsuario');
+    },
+    cancel() {
+      console.log('clicou no cancel...');
+      this.navigation.navigate('Home');
+    },
     handleMenu() {
       this.navigation.openDrawer();
     },
@@ -96,5 +146,15 @@ props: {
 			flex-direction: row;
 			justify-content: space-around;
 	}
+  .container-row-one-btn {
+        margin-top: 50px;
+        align-items: center;
+        justify-content: center;
+    }
+  .container-row {
+        margin-top: 50px;
+        align-items: center;
+        justify-content: space-around;
+    }
 
 </style>

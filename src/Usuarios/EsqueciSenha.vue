@@ -1,7 +1,7 @@
 <template>
-	<view> 
+	<nb-container> 
 		<Navbar @openDrawer="handleMenu" />
-      <view class="home-container">
+      <nb-content class="home-container">
 				<view class="drawer-text">
 					<text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21;" >Esqueci minha Senha</text>
 				</view>
@@ -11,9 +11,11 @@
         </nb-card-item>
         <nb-card-item :style="{paddingTop:0, paddingBottom:0}">
           
-				<nb-form :style="{ lineHeight: 16, width:250}">
-					<nb-item>
-						<nb-input  placeholder="Aqui..." v-model.lazy="email"  />
+				<nb-form class="form-box">
+					
+					<nb-item inlineLabel>
+						<nb-label> E-mail: </nb-label>
+						<nb-input  keyboard-type="email-address" v-model="email"  />
 					</nb-item>
 				</nb-form>
           
@@ -27,16 +29,16 @@
 				</nb-card-item>
       </nb-card>
 				
-			</view>
- 	</view>
+	  </nb-content>
+	</nb-container>
 </template>
 
 <script>
 
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Card, CardItem, Text, Body, Form, Content, Input, Toast } from "native-base";
-import email from 'react-native-email'
+import { Container, Card, CardItem, Text, Body, Form, Content, Input, Toast } from "native-base";
+//import email from 'react-native-email'
 
 
 export default {
@@ -47,6 +49,7 @@ export default {
 	},
 	components: {
 			Navbar, 
+			Container,
 			Card, 
 			CardItem, 
 			Text,
@@ -123,5 +126,9 @@ export default {
     align-items: center;
     flex-direction: row;
     justify-content: space-around;
+}
+.form-box {
+	line-height: 16;
+	width: 270px;
 }
 </style>

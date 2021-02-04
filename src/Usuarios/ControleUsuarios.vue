@@ -16,20 +16,20 @@
         <scroll-view>    
             <nb-list v-for="usuario in usuarios" :key="usuario.login">
               <nb-list-item avatar >
-                
                 <nb-body>
                   <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
                   <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
-                  
                 </nb-body>
                 <nb-right>
                   <nb-text note>{{usuario.perfil}}</nb-text>
-                  <touchable-opacity :on-press="editarUsuario">
+                  <touchable-opacity :on-press="() => 
+                    { editarUsuario(usuario); 
+                      this.props.navigation.navigate('EditarUsuario');
+                    }" >
                     <image :source="require('../../assets/loupe.png')" /> 
                   </touchable-opacity>
                 </nb-right>
               </nb-list-item>
-        
           </nb-list>
         </scroll-view>
 			</view>
@@ -45,13 +45,19 @@ import dirceu from '../../assets/faces/pierreperson.png';
 import flavio from '../../assets/faces/donaldperson.png';
 import sheila from '../../assets/faces/greta.png';
 import sonia from '../../assets/faces/girl.png';
+import Store from '../../store'
 
 export default {
   data() {
     return { 
+      usuarioSel: {
+      },
       usuarios: [
         { nome: 'Dirceu', 
           sobrenome: 'Henrique', 
+          cpf: '98135865082',
+          email: 'dirceu.vital@arkosolucoes.com.br',
+          ativo: true,
           telefone: '92 98135-3776',
           perfil: 'Administrador',
           foto: dirceu,
@@ -59,53 +65,34 @@ export default {
           },
         { nome: 'Flavio', 
           sobrenome: 'Rodhen', 
+          cpf: '47914461008',
+          email: 'flavio@email.com',
+          ativo: true,
           telefone: '92 98886-7744',
           perfil: 'Líder',
           foto: flavio,
           login: 'flavio.rodhen'
           },
         { nome: 'Sheila', 
-          sobrenome: 'Cruz', 
+          sobrenome: 'Cruz',
+          cpf: '90838963072',
+          email: 'sheila@email.com',
+          ativo: true, 
           telefone: '11 97125-1125',
           perfil: 'Controlador',
           foto: sheila,
           login: 'sheila.cruz'
           },
         { nome: 'Sonia', 
-          sobrenome: 'Maria', 
+          sobrenome: 'Maria',
+          cpf: '34726625063',
+          email: 'sonia@email.com',
+          ativo: true, 
           telefone: '92 98886-7744',
           perfil: 'Auditor',
           foto: sonia,
           login: 'sonia.maria'
-          },
- { nome: 'Dirceu', 
-          sobrenome: 'Henrique', 
-          telefone: '92 98135-3776',
-          perfil: 'Administrador',
-          foto: dirceu,
-          login: 'dirceu.henrique1'
-          },
-        { nome: 'Flavio', 
-          sobrenome: 'Rodhen', 
-          telefone: '92 98886-7744',
-          perfil: 'Líder',
-          foto: flavio,
-          login: 'flavio.rodhen1'
-          },
-        { nome: 'Sheila', 
-          sobrenome: 'Cruz', 
-          telefone: '11 97125-1125',
-          perfil: 'Controlador',
-          foto: sheila,
-          login: 'sheila.cruz1'
-          },
-        { nome: 'Sonia', 
-          sobrenome: 'Maria', 
-          telefone: '92 98886-7744',
-          perfil: 'Auditor',
-          foto: sonia,
-          login: 'sonia.maria1'
-          },
+          }
       ],
     }
   },
@@ -125,13 +112,26 @@ export default {
     console.log('vue-controle-bem mounted > Controle Usuarios ');
   },
   methods: {
-    editarUsuario(login) {
-      console.log('vue-controle-bem upload ', login);
-      
-      this.navigation.navigate('EditarUsuario'); 
+    editarUsuario: (usuarioS) => {   
+      var vm = this;
+      console.log('vue-controle-bem editar usuário > ', usuarioS.login);
+      try {
+        Store.dispatch('selectUsuario', usuarioS);
+      } catch (error) {
+        console.log('erro1 :', error)
+      }
+      console.log('selecionado > ', Store.state.usuarioSelecionado);
+    },
+    goEdit() {
+      console.log('apertou button ', usuario.login)
+      try {
+        this.navigation.navigate('EditarUsuario'); 
+      } catch (error) {
+        console.log('erro2 :', error)
+      }
     },
     getItem() {
-      console.log('vue-controle-bem getItem > ', usuario.nome)
+      console.log('vue-controle-bem getItem > ', usuario.nome);
     },
     handleMenu() {
       this.navigation.openDrawer();
