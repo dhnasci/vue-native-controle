@@ -76,36 +76,37 @@ props: {
             email: '',
             centroCusto: 'DTI',
             perfil: 'Lider'
-          }
+          },
+          usuarioSelect: Store.state.usuarioSelecionado,
     }
   },
   created() {
     this.loadFonts();
-    console.log("vue-controle-bem Editar Usuarios >  created")
-  },
-  mounted() {
-    console.log('vue-controle-bem mounted > Editar Usuarios ');
-    if (Store.state.usuarioSelecionado) {
-      console.log('vue-controle-bem....')
-      this.usuario = Store.state.usuarioSelecionado;
+    console.log("vue-controle-bem Editar Usuarios >  created");
+    this.sincronizar(this.usuarioSelect);
+    if (this.usuarioSelect) {
+      this.usuario = this.usuarioSelect;
     }
+    const st =  Store; 
+    const _this = this;
+    this.navigation.addListener('willFocus', () => {
+      console.log('ativou focus editar plus... ', st.state.usuarioSelecionado);
+      _this.sincronizar(st.state.usuarioSelecionado);
+      if (st.state.usuarioSelecionado) {
+        _this.usuario = st.state.usuarioSelecionado;
+      }
+    });
   },
-  beforeUpdate() {
-    console.log('vue-controle-bem','beforeUpdate')
-    if (Store.state.usuarioSelecionado) {
-      this.usuario = Store.state.usuarioSelecionado;
-    }
-  },
-  beforeEnter() {
-    console.log('vue-controle-bem','beforeRouteEnter')
-    if (Store.state.usuarioSelecionado) {
-      this.usuario = Store.state.usuarioSelecionado;
-    }
+  watch: {
+      usuarioSelect( usuarioNovo, usuarioAntigo){
+        this.sincronizar(usuarioNovo)
+      }
   },
   methods: {
     submit() {
         console.log('clicou no submit...', this.usuario);
-        this.navigation.navigate('ControleUsuario');
+        
+        this.navigation.navigate('ControleUsuarios');
     },
     cancel() {
       console.log('clicou no cancel...');
@@ -113,6 +114,9 @@ props: {
     },
     handleMenu() {
       this.navigation.openDrawer();
+    },
+    sincronizar(novoUsuario) {
+      this.usuario = Object.assign( {}, novoUsuario || this.usuario);
     },
     async loadFonts() {
       try {

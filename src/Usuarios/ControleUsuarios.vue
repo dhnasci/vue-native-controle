@@ -24,6 +24,7 @@
                   <nb-text note>{{usuario.perfil}}</nb-text>
                   <touchable-opacity :on-press="() => 
                     { editarUsuario(usuario); 
+                      
                       this.props.navigation.navigate('EditarUsuario');
                     }" >
                     <image :source="require('../../assets/loupe.png')" /> 
@@ -107,13 +108,16 @@ export default {
   },
   created() {
     this.loadFonts();
+    this.navigation.addListener('willFocus', () => {
+      console.log('ativou willFocus controle');
+    } );
   },
   mounted() {
     console.log('vue-controle-bem mounted > Controle Usuarios ');
   },
   methods: {
     editarUsuario: (usuarioS) => {   
-      var vm = this;
+      console.log('Controle Usuarios');
       console.log('vue-controle-bem editar usuário > ', usuarioS.login);
       try {
         Store.dispatch('selectUsuario', usuarioS);
