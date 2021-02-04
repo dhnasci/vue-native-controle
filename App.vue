@@ -18,6 +18,7 @@ import LoginScreen from './src/Usuarios/Login.vue'
 import EsqueciSenhaScreen from './src/Usuarios/EsqueciSenha.vue'
 import ControleUsuarioScreen from './src/Usuarios/ControleUsuarios.vue'
 import EditarUsuarioScreen from './src/Usuarios/EditarUsuario.vue'
+import CadastrarUsuarioScreen from './src/Usuarios/CadastrarUsuario.vue'
 import HomeScreen from './src/HomeNovo.vue'
 import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
@@ -37,6 +38,7 @@ const DrawerNavigator = createDrawerNavigator(
 		EsqueciSenha: EsqueciSenhaScreen,
     ControleUsuarios: ControleUsuarioScreen, 
     EditarUsuario: EditarUsuarioScreen,
+    CadastrarUsuario: CadastrarUsuarioScreen,
   },
   {
     initialRouteName: 'Login',

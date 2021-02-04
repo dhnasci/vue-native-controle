@@ -5,7 +5,12 @@
 				<view class="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
             Controle de Usuários </text>
-          <image :source="require('../../assets/add_box.png')" /> 
+              <touchable-opacity :on-press="() => 
+                { 
+                  this.props.navigation.navigate('CadastrarUsuario');
+                }" >
+                <image :source="require('../../assets/add_box.png')" /> 
+              </touchable-opacity>
         </view>
 				<view class="header-list">
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Nome</text>

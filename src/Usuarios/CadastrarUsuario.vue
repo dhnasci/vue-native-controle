@@ -1,13 +1,12 @@
 <template>
-    <nb-container>
+  <nb-container>
       <Navbar @openDrawer="handleMenu" />
       <nb-content class="home-container">
           <view class ="drawer-text">
-          <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
-            Edição de Usuários </text>
-          <image :source="require('../../assets/delete.png')" /> 
-        </view>
-        <nb-form>
+            <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
+                Cadastro de Usuários </text>
+            </view>
+              <nb-form>
             <nb-item inlineLabel>
                 <nb-label>Nome</nb-label>
                 <nb-input v-model="usuario.nome" />
@@ -28,27 +27,40 @@
                 <nb-label>E-mail</nb-label>
                 <nb-input v-model="usuario.email" keyboard-type="email-address" />
             </nb-item>
-            
+            <nb-item inlineLabel>
+                <nb-label>Centro Custo</nb-label>
+                <nb-picker
+                    mode="dropdown"
+                    :selectedValue="usuario.centroCusto"
+                    :onValueChange="callCentroCusto"
+                    >
+                    <item label="Tecnologia Informação" value="DTI" />
+                    <item label="Controladoria" value="DCO" />
+                    <item label="Planejamento" value="DPL" />
+                    <item label="Vendas" value="OVN" />
+                    <item label="Marketing" value="DMN" />
+                    <item label="Engenharia" value="EOP" />
+                </nb-picker>
+            </nb-item>
             <nb-card transparent>
-            <nb-card-item  class="container-row">
-                      <nb-button rounded success :on-press="submit" >
-                  <nb-text>Concluir</nb-text>
-              </nb-button>
-              <nb-button rounded primary :on-press="cancel" >
-                  <nb-text>Cancelar</nb-text>
-              </nb-button>
-            </nb-card-item>
+                <nb-card-item  class="container-row">
+                    <nb-button rounded success :on-press="submit" >
+                        <nb-text>Concluir</nb-text>
+                    </nb-button>
+                    <nb-button rounded primary :on-press="cancel" >
+                        <nb-text>Cancelar</nb-text>
+                    </nb-button>
+                </nb-card-item>
           </nb-card>
         </nb-form>
       </nb-content>
-    </nb-container>
+  </nb-container>
 </template>
 
 <script>
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body } from 'native-base';
-import Store from '../../store'
+import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Picker  } from 'native-base';
 
 export default {
     components: {
@@ -59,14 +71,15 @@ export default {
         Item, 
         Input, 
         Label,
-        Card, CardItem, Text, Body
-	},
-props: { 
-    navigation: {
-        type: Object
-        }
-  },
-  data() {
+        Card, CardItem, Text, Body, 
+        Item: Picker.Item,
+    },
+    props: { 
+        navigation: {
+            type: Object
+            }
+    },
+    data() {
       return{ 
           usuario: {
             nome: '',
@@ -76,31 +89,8 @@ props: {
             email: '',
             centroCusto: 'DTI',
             perfil: 'Lider'
-          },
-          usuarioSelect: Store.state.usuarioSelecionado,
+          }
     }
-  },
-  created() {
-    this.loadFonts();
-    console.log("vue-controle-bem Editar Usuarios >  created");
-    this.sincronizar(this.usuarioSelect);
-    if (this.usuarioSelect) {
-      this.usuario = this.usuarioSelect;
-    }
-    const st =  Store; 
-    const _this = this;
-    this.navigation.addListener('willFocus', () => {
-      console.log('ativou focus editar plus... ', st.state.usuarioSelecionado);
-      _this.sincronizar(st.state.usuarioSelecionado);
-      if (st.state.usuarioSelecionado) {
-        _this.usuario = st.state.usuarioSelecionado;
-      }
-    });
-  },
-  watch: {
-      usuarioSelect( usuarioNovo, usuarioAntigo){
-        this.sincronizar(usuarioNovo)
-      }
   },
   methods: {
     submit() {
@@ -111,11 +101,11 @@ props: {
       console.log('clicou no cancel...');
       this.navigation.navigate('Home');
     },
+    callCentroCusto(value, index) {
+        this.usuario.centroCusto = value;
+    },
     handleMenu() {
       this.navigation.openDrawer();
-    },
-    sincronizar(novoUsuario) {
-      this.usuario = Object.assign( {}, novoUsuario || this.usuario);
     },
     async loadFonts() {
       try {
@@ -156,5 +146,4 @@ props: {
         align-items: center;
         justify-content: space-around;
     }
-
 </style>
