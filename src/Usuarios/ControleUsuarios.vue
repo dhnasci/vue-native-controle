@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<scroll-view>
 		<Navbar @openDrawer="handleMenu" />
 			<view class="home-container">
 				<view class="drawer-text">
@@ -18,7 +18,7 @@
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Perfil</text>
 					
 				</view>  
-        <scroll-view>    
+        <view>    
             <nb-list v-for="usuario in usuarios" :key="usuario.login">
               <nb-list-item avatar >
                 <nb-body>
@@ -37,9 +37,9 @@
                 </nb-right>
               </nb-list-item>
           </nb-list>
-        </scroll-view>
+        </view>
 			</view>
-	</view>
+	</scroll-view>
     
 </template>
 
@@ -75,11 +75,19 @@ export default {
     console.log('Controle Usuarios created');
     const st = Store;
     const _this = this;
+    st.dispatch('listarUsuarios')
+     .then(() => {
+       console.log('controle usuarios entrou no dispatch...');
+       _this.usuarios = st.state.usuarios;
+       });
     
     this.navigation.addListener('willFocus', () => {
       console.log('ativou willFocus controle');
-      st.dispatch('listarUsuarios');
-      _this.usuarios = st.state.usuarios;
+      st.dispatch('listarUsuarios')
+         .then(() => {
+            _this.usuarios = st.state.usuarios;
+         });
+      
     } );
   },
   mounted() {

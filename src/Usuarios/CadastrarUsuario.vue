@@ -21,7 +21,7 @@
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Telefone</nb-label>
-                <nb-input v-model="usuario.telefone" />
+                <nb-input v-model="usuario.telefone" keyboard-type="numeric" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>E-mail</nb-label>
@@ -44,12 +44,12 @@
             </nb-item>
             <nb-card transparent>
                 <nb-card-item  class="container-row">
-                    <nb-button rounded success :on-press="submit" >
-                        <nb-text>Concluir</nb-text>
-                    </nb-button>
-                    <nb-button rounded primary :on-press="cancel" >
-                        <nb-text>Cancelar</nb-text>
-                    </nb-button>
+                  <nb-button rounded success :on-press="submit" >
+                      <nb-text>Concluir</nb-text>
+                  </nb-button>
+                  <nb-button rounded primary :on-press="cancel" >
+                      <nb-text>Cancelar</nb-text>
+                  </nb-button>
                 </nb-card-item>
           </nb-card>
         </nb-form>
@@ -60,7 +60,8 @@
 <script>
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Picker  } from 'native-base';
+import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Picker, Toast  } from 'native-base';
+import Store from '../../store'
 
 export default {
     components: {
@@ -92,9 +93,44 @@ export default {
           }
     }
   },
+  created() {
+    this.loadFonts();
+    console.log('Cadastrar Usuarios created');
+    
+    const _this = this;
+    this.navigation.addListener('willFocus', () => {
+      console.log('ativou focus cadastrar plus... ');
+      _this.usuario = { 
+            nome: '',
+            sobrenome: '',
+            cpf: '',
+            telefone: '',
+            email: '',
+            centroCusto: 'DTI',
+            perfil: 'Lider'
+          }   
+    });
+  },
   methods: {
     submit() {
         console.log('clicou no submit...', this.usuario);
+        try {
+          Store.dispatch('criarUsuario', { usuario: this.usuario} )
+           .then(() =>{
+              Toast.show({
+                text:'Usuário criado com sucesso',
+                buttonText:'Ok', 
+                position: 'bottom'
+                })
+              }).catch(error => console.log('erro promise > ', error))
+          
+        } catch (error) {
+          Toast.show({
+            text: error,
+            buttonText:'Ok', 
+            position: 'bottom'
+            });
+        }
         this.navigation.navigate('ControleUsuarios');
     },
     cancel() {
