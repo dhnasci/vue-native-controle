@@ -8,7 +8,7 @@
         </view>
         <view class="filter-box">
           <view class="filter-box-row">
-            <image :style="{ marginRight:20}" :source="require('./../../assets/search.png')" /> 
+            <image :style="{ marginRight:20 }" :source="require('./../../assets/search.png')" /> 
             <text-input 
               :style="{
                 lineHeight: 16,
@@ -80,7 +80,6 @@
 
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import React from "react";
 import { Picker, Container, Card, CardItem, Text, Body } from "native-base";
 
 export default {
@@ -89,6 +88,20 @@ export default {
       isAppReady: false,
       centroDeCusto: '',
       selecionado: 'ativo',
+      ativo: {
+        codigo: '', 
+        usucri: 'admin', 
+        criacao: undefined,
+        descricao: '', 
+        resumo: '',
+        centroCusto: 'DTI',
+        notafiscal: '',
+        valor: 0.0,
+        fornecedor: 'Dell',
+        status: 'ATIVO',
+        tipo: 'PROPRIO',
+        foto: ''
+      }
     };
   },
   components: {

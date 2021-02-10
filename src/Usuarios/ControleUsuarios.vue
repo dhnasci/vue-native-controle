@@ -104,9 +104,6 @@ export default {
       }
       console.log('selecionado > ', Store.state.usuarioSelecionado);
     },
-    getItem() {
-      console.log('vue-controle-bem getItem > ', usuario.nome);
-    },
     handleMenu() {
       this.navigation.openDrawer();
     },

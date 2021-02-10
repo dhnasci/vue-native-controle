@@ -5,7 +5,13 @@
           <view class ="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
             Edição de Usuários </text>
-          <image :source="require('../../assets/delete.png')" /> 
+            <touchable-opacity :on-press="() => 
+                { 
+                  deletaUsuario();
+                  this.props.navigation.navigate('ControleUsuarios');
+                }" >
+                  <image :source="require('../../assets/delete.png')" /> 
+            </touchable-opacity>
         </view>
         <nb-form>
             <nb-item inlineLabel>
@@ -47,8 +53,9 @@
 <script>
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body } from 'native-base';
+import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Toast } from 'native-base';
 import Store from '../../store'
+import { Alert } from 'react-native'
 
 export default {
     components: {
@@ -59,7 +66,7 @@ export default {
         Item, 
         Input, 
         Label,
-        Card, CardItem, Text, Body
+        Card, CardItem, Text, Body, Toast
 	},
 props: { 
     navigation: {
@@ -82,15 +89,18 @@ props: {
   },
   created() {
     this.loadFonts();
+    
     console.log("vue-controle-bem Editar Usuarios >  created");
     this.sincronizar(this.usuarioSelect);
     if (this.usuarioSelect) {
       this.usuario = this.usuarioSelect;
     }
     const st =  Store; 
+    
     const _this = this;
     this.navigation.addListener('willFocus', () => {
       console.log('ativou focus editar plus... ', st.state.usuarioSelecionado);
+      
       _this.sincronizar(st.state.usuarioSelecionado);
       if (st.state.usuarioSelecionado) {
         _this.usuario = st.state.usuarioSelecionado;
@@ -105,11 +115,69 @@ props: {
   methods: {
     submit() {
         console.log('clicou no submit...', this.usuario);
-        this.navigation.navigate('ControleUsuarios');
+        Store.state.erro = '';
+        const _this = this;
+        Store.dispatch('editarUsuario', { usuario: this.usuario })
+           .then(() => { 
+
+             if (Store.state.erro != '') {
+              console.log('erro > ', Store.state.erro);
+              Toast.show({
+                text:'Erro: ' + Store.state.erro,
+                buttonText:'Ok', 
+                position: 'bottom',
+                duration: 3000
+                })
+            }else {
+
+             Toast.show({
+                text:'Usuário editado com sucesso',
+                buttonText:'Ok', 
+                position: 'bottom',
+                duration: 2000
+                })
+              this.navigation.navigate('ControleUsuarios');
+            }
+           }).catch(error => console.log('Erro > ', error));
+        
     },
     cancel() {
       console.log('clicou no cancel...');
       this.navigation.navigate('Home');
+    },
+    deletaUsuario() {
+      Store.state.erro = '';
+      const _this = this;
+      Alert.alert(
+        'Confirmação',
+        'Deseja realmente remover usuário?',
+        [
+          { 
+            text: 'SIM', onPress: () => { _this.confirmaRemocao(); } 
+          }, 
+          { 
+            text: 'NÃO', onPress: () => { console.log('Não faz nada...'); }
+          }, 
+        ]
+      );
+      
+    },
+    confirmaRemocao() {
+      try {
+        Store.dispatch('removerUsuario', {usuario: this.usuario})
+          .then(() => { 
+        
+            if (Store.state.erro != '') {
+              console.log('erro > ', Store.state.erro);
+            }else {
+              console.log('Usuário removido com sucesso');
+            }
+               
+          }).catch(error => console.log('erro promise removerUsuario > ', error));
+        
+      } catch (error) {
+        console.log('não consegui remover ... ', error)
+      }
     },
     handleMenu() {
       this.navigation.openDrawer();

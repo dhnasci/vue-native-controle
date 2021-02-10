@@ -15,6 +15,18 @@ export default {
     postUsuario(usuario) {
       console.log('postUsuario ', usuario)
       return apiClient.post('/usuarios', usuario)
+    },
+    getUsuarioPorId(id) {
+      console.log('getUsuarioPorId UsuarioService > ', id)
+      return apiClient.get(`/usuarios/${id}`)
+    },
+    removeUsuario(id) {
+      console.log('removeUsuario em Usuario Service', id)
+      return apiClient.delete(`/usuarios/${id}`)
+    },
+    putUsuario(usuario) {
+      console.log('edita usuario no UsuarioService > ', usuario)
+      return apiClient.put(`/usuarios/${usuario.id}`, usuario)
     }
 
 }

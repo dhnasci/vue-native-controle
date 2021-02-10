@@ -114,6 +114,7 @@ export default {
   methods: {
     submit() {
         console.log('clicou no submit...', this.usuario);
+        const st = Store;
         try {
           Store.dispatch('criarUsuario', { usuario: this.usuario} )
            .then(() =>{
@@ -122,6 +123,10 @@ export default {
                 buttonText:'Ok', 
                 position: 'bottom'
                 })
+              }).then( () =>{ 
+                  st.dispatch('buscarUsuarioId', Store.state.idUsuarioCriado)
+                   .then(() =>{ console.log('buscarUsuarioId feito') })
+                    .catch((erro1) =>{ console.log('erro no buscar Id...', erro1)});
               }).catch(error => console.log('erro promise > ', error))
           
         } catch (error) {
@@ -130,7 +135,8 @@ export default {
             buttonText:'Ok', 
             position: 'bottom'
             });
-        }
+        };
+        
         this.navigation.navigate('ControleUsuarios');
     },
     cancel() {
