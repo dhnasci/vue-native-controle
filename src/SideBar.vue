@@ -10,10 +10,12 @@
             <image :source="require('./../assets/campaign.png')" /> 
         Notificações 
         </text>
-        <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
-        <image :source="require('./../assets/qr_code.png')" /> 
-        Controle de Ativos 
-        </text>
+        <touchable-opacity :onPress="callAtivos">
+            <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
+            <image :source="require('./../assets/qr_code.png')" /> 
+            Controle de Ativos 
+            </text>
+        </touchable-opacity>
         <text style="font-size: 18; font-weight: bold; color: #3F51B5; padding-top:16; padding-bottom:16; padding-left:25;"> 
         <image :source="require('./../assets/transfer_within_a_station.png')" /> 
         Transferência </text>
@@ -44,6 +46,11 @@ export default {
         callHome() {
             console.log('vue-controle-bem: clicou em Home no drawer');
             this.navigation.navigate('Home');
+            this.navigation.closeDrawer();
+        },
+        callAtivos() {
+            console.log('vue-controle-bem: clicou em Ativos no drawer');
+            this.navigation.navigate('Ativos');
             this.navigation.closeDrawer();
         },
         controleUsuarios() {

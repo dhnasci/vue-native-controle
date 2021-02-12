@@ -1,8 +1,8 @@
 <template>
-    <view>
+    <scroll-view>
       <Navbar @openDrawer="handleMenu" />
       <view class="home-container">
-                <view class="drawer-text">
+        <view class="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; "> 
             Filtro de Ativos </text>
         </view>
@@ -13,12 +13,11 @@
               :style="{
                 lineHeight: 16,
                 width:230,
-                borderBottomWidth: 1,
+                borderBottomWidth: 1
               }" v-model="centroDeCusto" /> 
           </view>
           <view class="filter-box-row">
             <image :style="{ marginRight: 50}" :source="require('./../../assets/qr_code_black.png')" /> 
-           
               <nb-picker
                 mode="dropdown"
                 :selectedValue="selecionado"
@@ -28,9 +27,7 @@
                 <item label="EM MANUTENÇÃO" value="manutencao" />
                 <item label="BAIXADO" value="baixado" />
                 <item label="REMOVIDO" value="removido" />
-                
               </nb-picker>
-            
           </view>
         </view>
         <view class="drawer-text">
@@ -38,49 +35,72 @@
             Controle de Ativos </text>
           <image :source="require('./../../assets/add_box.png')" /> 
         </view>
-         <view>
-           <nb-card :style="{marginLeft: 19, marginRight: 16, marginTop: 26}">
-                <nb-card-item header :style="{paddingBottom:1}"  >
-                  <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, fontWeight: 'bold', color: '#3F51B5'}">
-                    Computador Easy Pc</nb-text> 
-                </nb-card-item>
-                <nb-card-item  :style="{paddingTop:0, paddingBottom:0, justifyContent: 'space-between'}">
-                  <nb-text :style="{fontFamily: 'Lato', fontSize: 11, color: 'black'}">
-                  Dell </nb-text>
-                  <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, color: 'black'}">
-                  ATIVO </nb-text>
-                </nb-card-item>
-                <nb-card-item  :style="{ paddingBottom:0,justifyContent: 'space-around'}" >
-                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                      7898109243137
-                    </nb-text>
-                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                      R$ 3091,58
-                    </nb-text>
-                </nb-card-item>
-                <nb-card-item :style="{paddingTop:0, paddingBottom:10,justifyContent: 'space-around'}" >
-                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                      Nota Fiscal 23456
-                    </nb-text>
-                    <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                      10/10/2020
-                    </nb-text>
-                </nb-card-item>
-                <nb-card-item :style="{paddingTop:0}">
-                  <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                    Responsável Joana Dark</nb-text>
-                </nb-card-item>
-              </nb-card>
+        <view v-if="!isReady">
+          <nb-spinner color="blue" />
+        </view>
+         <view v-else>
+           <nb-list v-for="ativo in ativos" :key="ativo.codigo">
+             <nb-list-item :style="{paddingRight:0}">
+              <nb-card :style="{marginLeft: 10, width: 315, marginTop: 5}">
+                    <nb-card-item header :style="{paddingBottom:1}"  >
+                      <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, fontWeight: 'bold', color: '#3F51B5'}">
+                        {{ativo.resumo}}</nb-text> 
+                    </nb-card-item>
+                    <nb-card-item :style="{paddingTop:0, paddingBottom:0, justifyContent: 'space-between'}">
+                      <nb-thumbnail square large :source="{uri: ativo.foto}" />
+                      <view>
+                        <nb-card-item  :style="{paddingTop:0, paddingBottom:0, justifyContent: 'space-between'}">
+                          <nb-text :style="{fontFamily: 'Lato', fontSize: 11, color: 'black'}">
+                          {{ativo.fornecedor}} </nb-text>
+                          <nb-text :style="{fontFamily: 'Nunito', fontSize: 15, color: 'black'}">
+                          {{ativo.status}}</nb-text>
+                        </nb-card-item>
+                        <nb-card-item  :style="{ paddingBottom:0, justifyContent: 'space-around'}" >
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                              {{ativo.codigo}}    
+                            </nb-text>
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontWeight: 'bold', fontSize: 12}" > R$ </nb-text>
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                               {{ativo.valor}}
+                            </nb-text>
+                        </nb-card-item>
+                        <nb-card-item :style="{paddingTop:0, paddingBottom:10, justifyContent: 'space-around'}" >
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                              10/10/2020
+                            </nb-text>
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontWeight: 'bold', fontSize: 12}" > NF </nb-text>
+                            <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
+                                {{ativo.notaFiscal}}
+                            </nb-text>
+                        </nb-card-item>
+                        <nb-card-item :style="{paddingTop:0, justifyContent: 'space-around'}">
+                          <nb-text :style="{fontFamily: 'Roboto', fontSize: 12, fontWeight: 'bold'}">
+                            Resp: {{ativo.usuresp}}</nb-text>
+                            <touchable-opacity :on-press="() => 
+                              { 
+                                editarAtivo(ativo); 
+                                this.props.navigation.navigate('EditarAtivo');
+                              }" >
+                              <image :source="require('../../assets/loupe.png')" /> 
+                            </touchable-opacity>
+                        </nb-card-item>
+                      </view>
+                      
+                    </nb-card-item>
+                </nb-card>
+             </nb-list-item>
+           </nb-list>
          </view>
        </view>
-    </view>
+    </scroll-view>
 </template>
 
 <script>
 
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Picker, Container, Card, CardItem, Text, Body } from "native-base";
+import { Picker, Container, List, ListItem, Card, CardItem, Text, Body } from "native-base";
+import Store from '../../store'
 
 export default {
   data() {
@@ -88,20 +108,8 @@ export default {
       isAppReady: false,
       centroDeCusto: '',
       selecionado: 'ativo',
-      ativo: {
-        codigo: '', 
-        usucri: 'admin', 
-        criacao: undefined,
-        descricao: '', 
-        resumo: '',
-        centroCusto: 'DTI',
-        notafiscal: '',
-        valor: 0.0,
-        fornecedor: 'Dell',
-        status: 'ATIVO',
-        tipo: 'PROPRIO',
-        foto: ''
-      }
+      ativos: Store.state.ativos,
+      isReady: false
     };
   },
   components: {
@@ -111,7 +119,9 @@ export default {
     CardItem, 
     Text,
     Body,
-    Container
+    Container,
+    List,
+    ListItem
   },
   props: { 
     navigation: {
@@ -120,13 +130,33 @@ export default {
   },
   created() {
     this.loadFonts();
+    console.log('Controle Ativos created');
+    const st = Store;
+    const _this = this;
+    st.dispatch('listarAtivos')
+     .then(() => {
+       console.log('controle ativos entrou no dispatch...');
+       _this.ativos = st.state.ativos;
+       _this.isReady = true;
+       });
+    
+    this.navigation.addListener('willFocus', () => {
+      console.log('ativou willFocus controle');
+      st.dispatch('listarAtivos')
+         .then(() => {
+            _this.ativos = st.state.ativos;
+            _this.isReady = true;
+         });
+    } );
   },
   mounted() {
-    //console.log('vue-controle-bem mounted > ', this.$refs.myPicker);
     console.log('vue-controle-bem mounted > ');
-
   },
   methods: {
+    editarAtivo: (ativoS) => {
+      console.log('Controle Ativos');
+      console.log('Ativo selecionado --> ', ativoS.codigo);
+    },
     handleMenu() {
       console.log('vue-controle-bem Controle Ativos handleMenu');
       this.navigation.openDrawer();

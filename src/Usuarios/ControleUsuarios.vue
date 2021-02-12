@@ -12,24 +12,28 @@
                 <image :source="require('../../assets/add_box.png')" /> 
               </touchable-opacity>
         </view>
+        
 				<view class="header-list">
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Nome</text>
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Celular</text>
 					<text style="font-family: Roboto; font-weight: bold; font-size: 13; line-height: 21;">Perfil</text>
 					
 				</view>  
-        <view>    
+        <view v-if="!isReady">
+          <nb-spinner color="blue" />
+        </view>
+        <view v-else>    
             <nb-list v-for="usuario in usuarios" :key="usuario.login">
-              <nb-list-item avatar >
+              <nb-list-item>
                 <nb-body>
                   <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>
                   <nb-text note :numberOfLines="1">{{usuario.telefone}}</nb-Text>
                 </nb-body>
                 <nb-right>
-                  <nb-text note>{{usuario.perfil}}</nb-text>
+                  <nb-text note :style="{fontFamily: 'Roboto', fontSize: 11, fontWeight: 'bold'}">
+                    {{usuario.perfil.slice(0,11)}}</nb-text>
                   <touchable-opacity :on-press="() => 
                     { editarUsuario(usuario); 
-                      
                       this.props.navigation.navigate('EditarUsuario');
                     }" >
                     <image :source="require('../../assets/loupe.png')" /> 
@@ -58,7 +62,8 @@ export default {
     return { 
       usuarioSel: {
       },
-      usuarios: Store.state.usuarios
+      usuarios: Store.state.usuarios,
+      isReady: false
     }
   },
 	components: {
@@ -79,6 +84,7 @@ export default {
      .then(() => {
        console.log('controle usuarios entrou no dispatch...');
        _this.usuarios = st.state.usuarios;
+       _this.isReady = true;
        });
     
     this.navigation.addListener('willFocus', () => {
@@ -86,6 +92,7 @@ export default {
       st.dispatch('listarUsuarios')
          .then(() => {
             _this.usuarios = st.state.usuarios;
+            _this.isReady = true;
          });
       
     } );

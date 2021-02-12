@@ -22,6 +22,7 @@ import CadastrarUsuarioScreen from './src/Usuarios/CadastrarUsuario.vue'
 import HomeScreen from './src/HomeNovo.vue'
 import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
+import EditarAtivo from './src/Ativos/EditarAtivo.vue'
 
 import {
   createAppContainer,
@@ -35,6 +36,7 @@ const DrawerNavigator = createDrawerNavigator(
     Lista: ListaScreen,
     Login: LoginScreen,
     Ativos: ControleAtivos,
+    EditarAtivo: EditarAtivo,
 		EsqueciSenha: EsqueciSenhaScreen,
     ControleUsuarios: ControleUsuarioScreen, 
     EditarUsuario: EditarUsuarioScreen,

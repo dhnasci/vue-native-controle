@@ -2,6 +2,7 @@ import Vue from 'vue-native-core'
 import Vuex from 'vuex'
 
 import UsuarioService from '../src/Services/UsuarioService'
+import AtivoService from '../src/Services/AtivoService'
 
 Vue.use(Vuex)
 
@@ -90,7 +91,15 @@ const actions = {
             console.log('Erro ao buscar Id do Usuario > ', erro)
         }
 
-    }
+    },
+    listarAtivos: async ({ commit }) => {
+        try {
+          const response = await AtivoService.getAtivos();
+          commit('LISTAR_ATIVOS', { ativos: response.data })
+        } catch (erro) {
+          commit('SETAR_ERRO', { erro })
+        }
+    },
     
 }
 
@@ -121,8 +130,12 @@ const mutations = {
         console.log('entrou mutation REMOVER_USUARIO ')
         const indice = state.usuarios.findIndex( p => p.id === usuario.id)
         state.usuarios.splice(indice, 1)
-    }
+    },
+    LISTAR_ATIVOS: ( state, {ativos}) => {
+        state.ativos = ativos
+    },
 }
+
 
 const store = new Vuex.Store(
     {
