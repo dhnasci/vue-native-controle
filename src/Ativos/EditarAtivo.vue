@@ -17,7 +17,7 @@
         <nb-form>
              <nb-item inlineLabel>
                 <nb-label>Patrimonio</nb-label>
-                <nb-input autoFocus v-model="ativo.codigo" keyboardType="numeric" />
+                <nb-input autoFocus v-model="ativo.codigo" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Resumo</nb-label>
@@ -49,7 +49,7 @@
             </nb-item>
              <nb-item inlineLabel>
                 <nb-label>Nota Fiscal</nb-label>
-                <nb-input v-model="ativo.notaFiscal" keyboardType="decimal-pad" />
+                <nb-input v-model="ativo.notaFiscal" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Centro de Custo</nb-label>
@@ -92,7 +92,7 @@
             </nb-item>
              <nb-item inlineLabel>
                 <nb-label>Foto</nb-label>
-                <nb-input v-model="ativo.foto"  />
+                <nb-thumbnail square large :source="{uri: ativo.foto}" />
                 <nb-button primary :on-press="uploadFoto"><nb-text>Upload</nb-text></nb-button>
             </nb-item>
         </nb-form>
@@ -109,6 +109,7 @@ import Store from '../../store'
 import { Alert } from 'react-native'
 import * as Permissions from 'expo-permissions'
 import * as FileSystem from 'expo-file-system'
+import * as ImagePicker from 'expo-image-picker'
 
 export default {
     components: {
@@ -134,6 +135,7 @@ export default {
           selResponsavel: 'dirceu.nascimento',
           hasCameraPermission: false,
           hasLibraryPermission: false,
+          hasFotoLibraryPermissions: false,
           fileUri: '',
           ativo: {
             codigo: 0, 
@@ -148,11 +150,32 @@ export default {
             status: 'ATIVO',
             tipo: 'PROPRIO',
             foto: ''
-        }
+        },
+        ativoSelect: Store.state.ativoSelecionado,
       }
     },
     created() {
         this.loadFonts();
+        console.log('Editar Ativo created...');
+        this.sincronizar(this.ativoSelect);
+        if (this.ativoSelect) {
+            this.ativo = this.ativoSelect;
+        }
+        const st =  Store; 
+        const _this = this;
+        this.navigation.addListener('willFocus', () => {
+            console.log('ativou focus editar plus... ', st.state.ativoSelecionado);
+        
+            _this.sincronizar(st.state.ativoSelecionado);
+            if (st.state.ativoSelecionado) {
+                _this.ativo = st.state.ativoSelecionado;
+            }
+        });
+    },
+    watch: {
+        ativoSelect( ativoNovo, ativoAntigo) {
+            this.sincronizar(ativoNovo)
+      }
     },
     mounted() {
         console.log('vue-controle-bem','mounted')
@@ -165,12 +188,12 @@ export default {
             .then( status => { 
                 _this.hasLibraryPermission = status.status == 'granted' ? true : false;
                 }).catch( error => { console.log('error Library', 'error > ' + error.message) });
-        const cbemDir = FileSystem.documentDirectory + 'cbem/';
         
-        this.getSingleFoto(cbemDir).then( () => {
-            console.log('peguei a foto...');
-        }).catch( error => console.log(error));
-
+        ImagePicker.requestMediaLibraryPermissionsAsync()
+            .then( status => {
+                console.log('status foto library permissions > ', status);
+                _this.hasFotoLibraryPermissions = status == 'granted' ? true : false;
+            })
     },
     methods: {
         async getSingleFoto(cbemDir) {
@@ -222,35 +245,53 @@ export default {
             this.selResponsavel = value;
         },
         uploadFoto() {
-            console.log('uploadFoto de ...', this.fileUri);
-            if (this.hasCameraPermission){
-                console.log('pode usar camera...');
-            } else {
-                console.log('não pode usar camera...');
+            console.log('rodando o imagepicker...');
+            const _this = this;
+            const pickerOptions = {
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
             }
-            if (this.hasLibraryPermission){
-                console.log('pode usar files...');
-                try {
-                    console.log('enviando foto via api...');
-                    const myoptions = {
-                        httpMethod: 'POST',
-                        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-                        fieldName: 'file'
-                    };
-                    FileSystem.uploadAsync("http://192.168.0.20:8082/ativos/picture/3", this.fileUri, myoptions)
-                        .then( (response) => {
-                            console.log('response upload...', response);
-                            
-                        }).catch( (error) => { 
-                            console.log('error upload...', error);
-                        })
-                } catch (error) {
-                    console.log('Error: ', error)
-                }
-                
-            } else {
-                console.log('não pode usar files...');
-            }
+            ImagePicker.launchImageLibraryAsync(pickerOptions)
+                 .then( response => {
+                    console.log('saida imagepicker ...', response);
+                    console.log('uri imagepicker ...', response.uri);
+                    _this.ativo.foto = response.uri;
+                    if (_this.hasFotoLibraryPermissions){
+                        console.log('pode usar files...');
+                        try {
+                            console.log('enviando foto via api...');
+                            const myoptions = {
+                                httpMethod: 'POST',
+                                uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                                fieldName: 'file'
+                            };
+                            FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
+                                .then( (response) => {
+                                    console.log('response upload Ok ...', response);
+                                    _this.ativo.foto = { uri: response.headers.Location };
+                                }).catch( (error) => { 
+                                    console.log('error upload...', error);
+                                })
+                        } catch (error) {
+                            console.log('Error: ', error)
+                        }
+                        
+                    } else {
+                        console.log('não pode usar files...');
+                    }
+
+                 })
+                 .catch( e => {
+                     console.log('erro no imagepicker > ', e);
+                 })
+
+            //console.log('uploadFoto de ...', this.fileUri);
+            
+        },
+        sincronizar(novoAtivo) {
+            this.ativo = Object.assign( {}, novoAtivo || this.ativo);
         },
         async loadFonts() {
             try {

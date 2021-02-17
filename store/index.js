@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 const state = {
     usuarioSelecionado: undefined,
+    ativoSelecionado: undefined,
     usuarios: [],
     erro: '', 
     ativos: [],
@@ -100,6 +101,9 @@ const actions = {
           commit('SETAR_ERRO', { erro })
         }
     },
+    selectAtivo: ( {commit}, ativo) => {
+        commit('SELECIONA_ATIVO', ativo)
+    }, 
     
 }
 
@@ -133,6 +137,9 @@ const mutations = {
     },
     LISTAR_ATIVOS: ( state, {ativos}) => {
         state.ativos = ativos
+    },
+    SELECIONA_ATIVO: (state, ativo)=>{
+        state.ativoSelecionado = ativo
     },
 }
 

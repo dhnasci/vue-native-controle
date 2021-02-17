@@ -156,6 +156,12 @@ export default {
     editarAtivo: (ativoS) => {
       console.log('Controle Ativos');
       console.log('Ativo selecionado --> ', ativoS.codigo);
+      try {
+        Store.dispatch('selectAtivo', ativoS);
+      } catch (error) {
+        console.log('erro1 :', error)
+      }
+      console.log('selecionado > ', Store.state.usuarioSelecionado);
     },
     handleMenu() {
       console.log('vue-controle-bem Controle Ativos handleMenu');
