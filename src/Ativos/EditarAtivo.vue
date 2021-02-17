@@ -108,6 +108,7 @@ import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Bo
 import Store from '../../store'
 import { Alert } from 'react-native'
 import * as Permissions from 'expo-permissions'
+import * as FileSystem from 'expo-file-system'
 
 export default {
     components: {
@@ -133,14 +134,15 @@ export default {
           selResponsavel: 'dirceu.nascimento',
           hasCameraPermission: false,
           hasLibraryPermission: false,
+          fileUri: '',
           ativo: {
-            codigo: '', 
+            codigo: 0, 
             usucri: 'admin', 
             criacao: undefined,
             descricao: '', 
             resumo: '',
             centroCusto: 'DTI',
-            notafiscal: '',
+            notafiscal: 0,
             valor: 0.0,
             fornecedor: 'Dell',
             status: 'ATIVO',
@@ -162,10 +164,43 @@ export default {
         Permissions.askAsync(Permissions.MEDIA_LIBRARY)
             .then( status => { 
                 _this.hasLibraryPermission = status.status == 'granted' ? true : false;
-                console.log('vue-controle-bem Library Permission', status)
                 }).catch( error => { console.log('error Library', 'error > ' + error.message) });
+        const cbemDir = FileSystem.documentDirectory + 'cbem/';
+        
+        this.getSingleFoto(cbemDir).then( () => {
+            console.log('peguei a foto...');
+        }).catch( error => console.log(error));
+
     },
     methods: {
+        async getSingleFoto(cbemDir) {
+        
+            const cbemFileUri = cbemDir + 'minhaFotoLocal.png';
+            const cbemUrl = 'https://controle-bem.s3-sa-east-1.amazonaws.com/computador01.png';
+            try {
+                await this.ensureDirectoryExist(cbemDir);
+
+                const fileInfo = await FileSystem.getInfoAsync(cbemFileUri); 
+                console.log('file info: ',  fileInfo);
+                if (!fileInfo.exists) {
+                    console.log('Não existe foto local. Fazendo o download...');
+                    await FileSystem.downloadAsync(cbemUrl, cbemFileUri);
+                    console.log('Foto baixada...');
+                }
+                this.fileUri = cbemFileUri;
+            } catch (error) {
+                console.log('Error > ', error);
+            }
+            
+        },
+        async ensureDirectoryExist(myDir) {
+            const dirInfo = await FileSystem.getInfoAsync(myDir);
+            if (!dirInfo.exists) {
+                console.log('cbem não existe ainda... criando...');
+                await FileSystem.makeDirectoryAsync(myDir, { intermediates: true});
+                console.log('cbem criado...')
+            }
+        },
         callFornecedor(value, index) {
             console.log('vue-controle-bem Fornecedor Status ', value);
             console.log('vue-controle-bem Fornecedor index ', index);
@@ -187,7 +222,7 @@ export default {
             this.selResponsavel = value;
         },
         uploadFoto() {
-            console.log('uploadFoto');
+            console.log('uploadFoto de ...', this.fileUri);
             if (this.hasCameraPermission){
                 console.log('pode usar camera...');
             } else {
@@ -195,6 +230,24 @@ export default {
             }
             if (this.hasLibraryPermission){
                 console.log('pode usar files...');
+                try {
+                    console.log('enviando foto via api...');
+                    const myoptions = {
+                        httpMethod: 'POST',
+                        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                        fieldName: 'file'
+                    };
+                    FileSystem.uploadAsync("http://192.168.0.20:8082/ativos/picture/3", this.fileUri, myoptions)
+                        .then( (response) => {
+                            console.log('response upload...', response);
+                            
+                        }).catch( (error) => { 
+                            console.log('error upload...', error);
+                        })
+                } catch (error) {
+                    console.log('Error: ', error)
+                }
+                
             } else {
                 console.log('não pode usar files...');
             }
