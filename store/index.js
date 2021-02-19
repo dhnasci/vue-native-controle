@@ -104,7 +104,17 @@ const actions = {
     selectAtivo: ( {commit}, ativo) => {
         commit('SELECIONA_ATIVO', ativo)
     }, 
-    
+    editarAtivo: async ({ commit }, {ativo}) => {
+        console.log('action editarAtivo...', ativo)
+        try {
+            const response = await AtivoService.putAtivo(ativo);
+            console.log('response Service ok... ', response)
+            commit('EDITAR_ATIVO', { ativo: response.data })
+        } catch (erro) {
+            commit('SETAR_ERRO', { erro })
+            
+        }
+    }
 }
 
 const mutations = {
@@ -141,6 +151,10 @@ const mutations = {
     SELECIONA_ATIVO: (state, ativo)=>{
         state.ativoSelecionado = ativo
     },
+    EDITAR_ATIVO: (state, ativo) => {
+        const indice = state.ativos.findIndex( p => p.id === ativo.id)
+        state.ativos.splice(indice, 1, ativo)
+    }
 }
 
 

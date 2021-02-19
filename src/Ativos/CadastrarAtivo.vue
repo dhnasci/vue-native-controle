@@ -46,13 +46,14 @@
                 <item label="Amazon" value="Amazon" />
               </nb-picker>
             </nb-item>
-            <nb-item inlineLabel>
+             <nb-item inlineLabel>
                 <nb-label>Nota Fiscal</nb-label>
-                <nb-input disabled v-model="ativo.notaFiscal" />
+                <nb-input v-model="ativo.notaFiscal" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Centro de Custo</nb-label>
-                <nb-picker mode="dropdown"
+                <nb-picker
+                mode="dropdown"
                 :selectedValue="selCentroCusto"
                 :onValueChange="callCentroCusto"
                 >
@@ -66,7 +67,7 @@
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Tipo de Ativo</nb-label>
-                <nb-picker 
+                <nb-picker
                 mode="dropdown"
                 :selectedValue="selTipoAtivo"
                 :onValueChange="callTipoAtivo"
@@ -91,8 +92,7 @@
              <nb-item inlineLabel>
                 <nb-label>Foto</nb-label>
                 <nb-thumbnail square large :source="{uri: ativo.foto}" />
-                <nb-button primary :on-press="uploadFoto">
-                    <nb-text>Upload</nb-text></nb-button>
+                <nb-button primary :on-press="uploadFoto"><nb-text>Upload</nb-text></nb-button>
             </nb-item>
              <nb-card transparent>
             <nb-card-item  class="container-row">
@@ -153,7 +153,7 @@ export default {
             descricao: '', 
             resumo: '',
             centroCusto: 'DTI',
-            notaFiscal: 0,
+            notafiscal: 0,
             valor: 0.0,
             fornecedor: 'Dell',
             status: 'ATIVO',
@@ -266,13 +266,18 @@ export default {
                         } catch (error) {
                             console.log('Error: ', error)
                         }
+                        
                     } else {
                         console.log('não pode usar files...');
                     }
+
                  })
                  .catch( e => {
                      console.log('erro no imagepicker > ', e);
-                 })            
+                 })
+
+            //console.log('uploadFoto de ...', this.fileUri);
+            
         },
         sincronizar(novoAtivo) {
             this.ativo = Object.assign( {}, novoAtivo || this.ativo);
@@ -291,6 +296,7 @@ export default {
                 FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
                     .then( response => {
                         console.log('response foto upload ok...', response);
+            
                     }).catch( (error) => { 
                         console.log('error upload...', error);
                     })
@@ -306,13 +312,14 @@ export default {
                             duration: 3000
                             })
                     }else {
+
                         Toast.show({
                             text:'Ativo editado com sucesso',
                             buttonText:'Ok', 
                             position: 'bottom',
                             duration: 2000
                             })
-                        this.navigation.navigate('Ativos');
+                    this.navigation.navigate('ControleAtivos');
                     }
                 }).catch(error => console.log('Erro > ', error));
                 

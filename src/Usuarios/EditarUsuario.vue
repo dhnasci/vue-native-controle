@@ -166,13 +166,11 @@ props: {
       try {
         Store.dispatch('removerUsuario', {usuario: this.usuario})
           .then(() => { 
-        
             if (Store.state.erro != '') {
               console.log('erro > ', Store.state.erro);
             }else {
               console.log('Usuário removido com sucesso');
-            }
-               
+            }  
           }).catch(error => console.log('erro promise removerUsuario > ', error));
         
       } catch (error) {
