@@ -23,7 +23,7 @@
           <nb-spinner color="blue" />
         </view>
         <view v-else>    
-            <nb-list v-for="usuario in usuarios" :key="usuario.login">
+            <nb-list v-for="usuario in usuarios" :key="usuario.id">
               <nb-list-item>
                 <nb-body>
                   <nb-text>{{usuario.nome}} {{usuario.sobrenome}}</nb-Text>

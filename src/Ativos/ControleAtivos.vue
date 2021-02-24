@@ -33,13 +33,18 @@
         <view class="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
             Controle de Ativos </text>
-          <image :source="require('./../../assets/add_box.png')" /> 
+              <touchable-opacity :on-press="() => 
+                { 
+                  this.props.navigation.navigate('CadastrarAtivo');
+                }" >
+                <image :source="require('../../assets/add_box.png')" /> 
+              </touchable-opacity>
         </view>
         <view v-if="!isReady">
           <nb-spinner color="blue" />
         </view>
          <view v-else>
-           <nb-list v-for="ativo in ativos" :key="ativo.codigo">
+           <nb-list v-for="ativo in ativos" :key="ativo.id">
              <nb-list-item :style="{paddingRight:0}">
               <nb-card :style="{marginLeft: 10, width: 315, marginTop: 5}">
                     <nb-card-item header :style="{paddingBottom:1}"  >
@@ -66,7 +71,7 @@
                         </nb-card-item>
                         <nb-card-item :style="{paddingTop:0, paddingBottom:10, justifyContent: 'space-around'}" >
                             <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
-                              10/10/2020
+                              {{ativo.aquisicao}}
                             </nb-text>
                             <nb-text :style="{fontFamily: 'RobotoReg', fontWeight: 'bold', fontSize: 12}" > NF </nb-text>
                             <nb-text :style="{fontFamily: 'RobotoReg', fontSize: 12}">
@@ -144,8 +149,13 @@ export default {
       console.log('ativou willFocus controle');
       st.dispatch('listarAtivos')
          .then(() => {
+           _this.ativos = [];
+           
             _this.ativos = st.state.ativos;
+            console.log('ativos...', _this.ativos);
             _this.isReady = true;
+         }).catch( error => {
+           console.log('error no willFocus...', error);
          });
     } );
   },
@@ -164,12 +174,12 @@ export default {
       console.log('selecionado > ', Store.state.usuarioSelecionado);
     },
     handleMenu() {
-      console.log('vue-controle-bem Controle Ativos handleMenu');
+      console.log('Controle Ativos handleMenu');
       this.navigation.openDrawer();
     },
     callStatus(value, index) {
-      console.log('vue-controle-bem Controle Ativo Status ', value);
-      console.log('vue-controle-bem Controle Ativo index ', index);
+      console.log('Controle Ativo Status ', value);
+      console.log('Controle Ativo index ', index);
       this.selecionado = value;
     },
     async loadFonts() {

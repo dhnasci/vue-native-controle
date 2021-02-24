@@ -5,18 +5,13 @@
       <nb-content class="home-container">
           <view class ="drawer-text">
           <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
-            Edição de Ativos </text>
-            <touchable-opacity :on-press="() => 
-                { 
-                    this.props.navigation.navigate('ControleAtivos');
-                }" >
-                  <image :source="require('../../assets/delete.png')" /> 
-            </touchable-opacity>
+            Cadastro de Ativos </text>
+            
         </view>
         <nb-form>
              <nb-item inlineLabel>
                 <nb-label>Patrimonio</nb-label>
-                <nb-input autoFocus v-model="ativo.codigo" />
+                <nb-input autoFocus v-model="ativo.codigo" keyboardType="numeric" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Resumo</nb-label>
@@ -29,6 +24,10 @@
              <nb-item inlineLabel>
                 <nb-label>Valor R$</nb-label>
                 <nb-input v-model="ativo.valor" keyboardType="numeric" />
+            </nb-item>
+             <nb-item inlineLabel disabled>
+                <nb-label>Aquisição</nb-label>
+                <nb-input v-model="ativo.aquisicao" keyboardType="numeric"/>
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Fornecedor</nb-label>
@@ -48,7 +47,7 @@
             </nb-item>
              <nb-item inlineLabel>
                 <nb-label>Nota Fiscal</nb-label>
-                <nb-input v-model="ativo.notaFiscal" />
+                <nb-input v-model="ativo.notaFiscal" keyboardType="numeric" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Centro de Custo</nb-label>
@@ -89,10 +88,11 @@
                 <item label="Sonia" value="sonia.maria" />
               </nb-picker>
             </nb-item>
-             <nb-item inlineLabel>
+             <nb-item inlineLabel class="container-row">
                 <nb-label>Foto</nb-label>
                 <nb-thumbnail square large :source="{uri: ativo.foto}" />
-                <nb-button primary :on-press="uploadFoto"><nb-text>Upload</nb-text></nb-button>
+                <nb-button rounded info :on-press="uploadFoto">
+                    <nb-text>Achar</nb-text></nb-button>
             </nb-item>
              <nb-card transparent>
             <nb-card-item  class="container-row">
@@ -119,6 +119,7 @@ import { Alert } from 'react-native'
 import * as Permissions from 'expo-permissions'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
+import config from '../config'
 
 export default {
     components: {
@@ -147,39 +148,55 @@ export default {
           hasFotoLibraryPermissions: false,
           fileUri: '',
           ativo: {
-            codigo: 0, 
+            codigo: '', 
             usucri: 'admin', 
-            criacao: undefined,
+            usuresp: 'dirceu.nascimento',
             descricao: '', 
             resumo: '',
             centroCusto: 'DTI',
-            notafiscal: 0,
-            valor: 0.0,
+            notaFiscal: '',
+            valor: '0.0',
             fornecedor: 'Dell',
-            status: 'ATIVO',
             tipo: 'PROPRIO',
-            foto: ''
+            foto: config.IMGPADRAO,
+            aquisicao: '2020-01-31'
         },
         ativoSelect: Store.state.ativoSelecionado,
       }
     },
     created() {
         this.loadFonts();
-        console.log('Editar Ativo created...');
-        this.sincronizar(this.ativoSelect);
-        if (this.ativoSelect) {
-            this.ativo = this.ativoSelect;
-        }
+        console.log('Cadastrar Ativo created...');
+        
         const st =  Store; 
         const _this = this;
         this.navigation.addListener('willFocus', () => {
-            console.log('ativou focus editar plus... ', st.state.ativoSelecionado);
-        
-            _this.sincronizar(st.state.ativoSelecionado);
-            if (st.state.ativoSelecionado) {
-                _this.ativo = st.state.ativoSelecionado;
+            console.log('ativou focus cadastrar plus... ', st.state.ativoSelecionado);
+            _this.ativo = {
+                codigo: '', 
+                usucri: 'admin', 
+                usuresp: 'dirceu.nascimento',
+                descricao: '', 
+                resumo: '',
+                centroCusto: 'DTI',
+                notaFiscal: '',
+                valor: '0.0',
+                fornecedor: 'Dell',
+                tipo: 'PROPRIO',
+                foto: config.IMGPADRAO,
+                aquisicao: '2020-01-31'
             }
-        });
+            Permissions.askAsync(Permissions.MEDIA_LIBRARY)
+            .then( status => { 
+                _this.hasLibraryPermission = status.status == 'granted' ? true : false;
+                }).catch( error => { console.log('error Library', 'error > ' + error.message) });
+        
+            ImagePicker.requestMediaLibraryPermissionsAsync()
+                .then( status => {
+                    console.log('status foto library permissions > ', status);
+                    _this.hasFotoLibraryPermissions = status == 'granted' ? true : false;
+                }).catch( error => { console.log('error ImagePicker', 'error > ' + error.message) });
+            });
     },
     watch: {
         ativoSelect( ativoNovo, ativoAntigo) {
@@ -201,8 +218,8 @@ export default {
         ImagePicker.requestMediaLibraryPermissionsAsync()
             .then( status => {
                 console.log('status foto library permissions > ', status);
-                _this.hasFotoLibraryPermissions = status == 'granted' ? true : false;
-            })
+                _this.hasFotoLibraryPermissions = status.status == 'granted' ? true : false;
+            }).catch( error => { console.log('error ImagePicker', 'error > ' + error.message) });
     },
     methods: {
         async ensureDirectoryExist(myDir) {
@@ -237,47 +254,30 @@ export default {
             console.log('rodando o imagepicker...');
             const _this = this;
             const pickerOptions = {
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [4, 3],
                 quality: 1,
             }
-            ImagePicker.launchImageLibraryAsync(pickerOptions)
-                 .then( response => {
+            if (this.hasFotoLibraryPermissions) {
+                ImagePicker.launchImageLibraryAsync(pickerOptions)
+                .then( response => {
                     console.log('saida imagepicker ...', response);
                     console.log('uri imagepicker ...', response.uri);
                     _this.ativo.foto = response.uri;
-                    if (_this.hasFotoLibraryPermissions){
-                        console.log('pode usar files...');
-                        try {
-                            console.log('enviando foto via api...');
-                            const myoptions = {
-                                httpMethod: 'POST',
-                                uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-                                fieldName: 'file'
-                            };
-                            FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
-                                .then( (response) => {
-                                    console.log('response upload Ok ...', response);
-                                    _this.ativo.foto = { uri: response.headers.Location };
-                                }).catch( (error) => { 
-                                    console.log('error upload...', error);
-                                })
-                        } catch (error) {
-                            console.log('Error: ', error)
-                        }
-                        
-                    } else {
-                        console.log('não pode usar files...');
-                    }
-
-                 })
-                 .catch( e => {
-                     console.log('erro no imagepicker > ', e);
-                 })
-
-            //console.log('uploadFoto de ...', this.fileUri);
-            
+                    _this.fileUri = response.uri;
+                }).catch( e => {
+                    console.log('erro no imagepicker > ', e);
+                })
+            } else {
+                console.log('Não tenho permissão para acessar galeria de fotos');
+                Toast.show({
+                    text:'Não tenho permissão para acessar galeria de fotos',
+                    buttonText:'Ok', 
+                    position: 'bottom',
+                    duration: 3000
+                    })
+            }
         },
         sincronizar(novoAtivo) {
             this.ativo = Object.assign( {}, novoAtivo || this.ativo);
@@ -285,48 +285,75 @@ export default {
         submit() {
             console.log('clicou no submit...', this.ativo);
             Store.state.erro= '';
-            // atualiza update de foto 
-            if (this.hasFotoLibraryPermissions){
-                console.log('faz update da foto...', this.ativo);
-                const myoptions = {
-                    httpMethod: 'POST',
-                    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-                    fieldName: 'file'
-                };
-                FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
-                    .then( response => {
-                        console.log('response foto upload ok...', response);
-            
-                    }).catch( (error) => { 
-                        console.log('error upload...', error);
-                    })
-            }
-            Store.dispatch('editarAtivo', { ativo: this.ativo })
+            const _this = this;
+            const st = Store;
+            // cria registro com foto standard
+            // pega id novo
+            // faz update da foto 
+            this.ativo.foto = config.IMGPADRAO;
+            Store.dispatch('criarAtivo', { ativo: this.ativo })
                 .then(() => {
-                    if (Store.state.erro != '') {
-                        console.log('erro > ', Store.state.erro);
+                    if (!st.state.erro == '') {
+                        console.log('erro > ', st.state.erro);
                         Toast.show({
-                            text:'Erro: ' + Store.state.erro,
+                            text:'Erro: ' + st.state.erro,
                             buttonText:'Ok', 
                             position: 'bottom',
                             duration: 3000
                             })
                     }else {
-
                         Toast.show({
-                            text:'Ativo editado com sucesso',
+                            text:'Atio criado com sucesso',
                             buttonText:'Ok', 
                             position: 'bottom',
                             duration: 2000
-                            })
-                    this.navigation.navigate('ControleAtivos');
+                        })
                     }
-                }).catch(error => console.log('Erro > ', error));
-                
+                }).then( () => {
+                    // fazer o update da foto escolhida
+                    const myoptions = {
+                        httpMethod: 'POST',
+                        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                        fieldName: 'file'
+                    };
+                    FileSystem.uploadAsync(`${config.apiURL}/ativos/picture/${st.state.idAtivoCriado}`, _this.fileUri, myoptions)
+                        .then( response => {
+                            console.log('response foto upload ok...', response);
+                            if (response.status == 201) {
+                               _this.ativo.foto = response.headers.Location ;
+                                const _st = st;
+                                st.dispatch('atualizarImagemAtivo', { ativo: _this.ativo})
+                                    .then( () => {
+                                        console.log('Imagem atualizada...');
+                                        _st.dispatch('buscarAtivo', _st.state.idAtivoCriado)
+                                            .then( () => {
+                                                console.log('Ativo buscado por id');
+                                                
+                                            })
+                                    }).catch( error => console.log('Erro na atualização da imagem...', error) );
+                            }else{
+                                console.log('erro > ', response.body.error);
+                                Toast.show({
+                                    text:'Erro update da imagem',
+                                    buttonText:'Ok', 
+                                    position: 'bottom',
+                                    duration: 3000
+                                    });
+                            }
+        
+                        })
+                        _this.navigation.navigate('Ativos');
+                })
+                .catch(error => console.log('Erro editar ativo > ', error));
         }, 
         cancel() {
             console.log('clicou no cancel...');
             this.navigation.navigate('Home');
+        },
+        getStatusResponse(response){
+            console.log('entrou no getStatusResponse...', response.status);
+
+            return true;
         },
         async loadFonts() {
             try {

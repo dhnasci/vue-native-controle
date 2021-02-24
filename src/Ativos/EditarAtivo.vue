@@ -8,91 +8,64 @@
             Edição de Ativos </text>
             <touchable-opacity :on-press="() => 
                 { 
-                    this.props.navigation.navigate('ControleAtivos');
+                    removeAtivo();
+                    this.props.navigation.navigate('Ativos');
                 }" >
                   <image :source="require('../../assets/delete.png')" /> 
             </touchable-opacity>
         </view>
         <nb-form>
              <nb-item inlineLabel>
-                <nb-label>Patrimonio</nb-label>
+                <nb-label>Patrimonio*</nb-label>
                 <nb-input autoFocus v-model="ativo.codigo" />
             </nb-item>
             <nb-item inlineLabel>
-                <nb-label>Resumo</nb-label>
+                <nb-label>Resumo*</nb-label>
                 <nb-input v-model="ativo.resumo" />
             </nb-item>
             <nb-item inlineLabel>
-                <nb-label>Descrição</nb-label>
-                <nb-textarea :rowSpan="4" bordered placeholder="Descreva mais detalhes..." v-model="ativo.descricao" />
+                <nb-label>Descrição*</nb-label>
+                <nb-textarea :rowSpan="3" bordered placeholder="Descreva mais detalhes..." v-model="ativo.descricao" />
+            </nb-item>
+             <nb-item inlineLabel disabled>
+                <nb-label>Valor* R$</nb-label>
+                <nb-input v-model="ativo.valor" keyboard-type="numeric"/>
             </nb-item>
              <nb-item inlineLabel>
-                <nb-label>Valor R$</nb-label>
-                <nb-input v-model="ativo.valor" keyboardType="numeric" />
+                <nb-label>Nota Fiscal*</nb-label>
+                <nb-input v-model="ativo.notaFiscal" keyboard-type="numeric" />
+            </nb-item>
+             <nb-item inlineLabel disabled>
+                <nb-label>Aquisição</nb-label>
+                <nb-input v-model="ativo.aquisicao" disabled/>
+                
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Fornecedor</nb-label>
-                <nb-picker
-                mode="dropdown"
-                :selectedValue="selecionado"
-                :onValueChange="callFornecedor"
-                >
-                <item label="Dell" value="Dell" />
-                <item label="Lojas Americanas" value="LojasAmericanas" />
-                <item label="Magazine Luiza" value="MagazineLuiza" />
-                <item label="Lojas Bahia" value="LojasBahia" />
-                <item label="Extra" value="Extra" />
-                <item label="Carrefour" value="Carrefour" />
-                <item label="Amazon" value="Amazon" />
-              </nb-picker>
+                <nb-input v-model="ativo.fornecedor" disabled/>
+            
+               
             </nb-item>
-            <nb-item inlineLabel>
-                <nb-label>Nota Fiscal</nb-label>
-                <nb-input disabled v-model="ativo.notaFiscal" />
-            </nb-item>
+           
             <nb-item inlineLabel>
                 <nb-label>Centro de Custo</nb-label>
-                <nb-picker mode="dropdown"
-                :selectedValue="selCentroCusto"
-                :onValueChange="callCentroCusto"
-                >
-                <item label="Tecnologia Informação" value="DTI" />
-                <item label="Controladoria" value="DCO" />
-                <item label="Planejamento" value="DPL" />
-                <item label="Vendas" value="OVN" />
-                <item label="Marketing" value="DMN" />
-                <item label="Engenharia" value="EOP" />
-              </nb-picker>
+                    <nb-input v-model="ativo.centroCusto" disabled/>
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Tipo de Ativo</nb-label>
-                <nb-picker 
-                mode="dropdown"
-                :selectedValue="selTipoAtivo"
-                :onValueChange="callTipoAtivo"
-                >
-                <item label="Próprio" value="PROPRIO" />
-                <item label="Terceiros" value="TERCEIROS" />
-              </nb-picker>
+                <nb-input v-model="ativo.tipo" disabled/>
+                
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Responsável</nb-label>
-                <nb-picker
-                mode="dropdown"
-                :selectedValue="selResponsavel"
-                :onValueChange="callResponsavel"
-                >
-                <item label="Dirceu" value="dirceu.nascimento" />
-                <item label="Flávio" value="flavio.rodhen" />
-                <item label="Sheila" value="sheila.cruz" />
-                <item label="Sonia" value="sonia.maria" />
-              </nb-picker>
+
+                <nb-input v-model="ativo.usuresp" disabled/>
             </nb-item>
-             <nb-item inlineLabel>
+             <nb-item inlineLabel class="container-row">
                 <nb-label>Foto</nb-label>
                 <nb-thumbnail square large :source="{uri: ativo.foto}" />
-                <nb-button primary :on-press="uploadFoto">
-                    <nb-text>Upload</nb-text></nb-button>
+                <nb-button rounded info :on-press="uploadFoto">
+                    <nb-text>ACHAR</nb-text></nb-button>
             </nb-item>
              <nb-card transparent>
             <nb-card-item  class="container-row">
@@ -147,21 +120,29 @@ export default {
           hasFotoLibraryPermissions: false,
           fileUri: '',
           ativo: {
-            codigo: 0, 
+            codigo: '', 
             usucri: 'admin', 
-            criacao: undefined,
+            usuresp: 'dirceu.nascimento',
             descricao: '', 
             resumo: '',
             centroCusto: 'DTI',
-            notaFiscal: 0,
-            valor: 0.0,
+            notaFiscal: '',
+            valor: '0.0',
             fornecedor: 'Dell',
             status: 'ATIVO',
             tipo: 'PROPRIO',
-            foto: ''
+            foto: 'https://controle-bem.s3-sa-east-1.amazonaws.com/ativoGenerico.jpeg',
+            aquisicao: '1990-01-31'
         },
         ativoSelect: Store.state.ativoSelecionado,
       }
+    },
+    computed: {
+        valorConvertido() {
+            const val = ativo.valor.toString();
+            console.log('valor... ', val);
+            return val;
+        }
     },
     created() {
         this.loadFonts();
@@ -237,7 +218,7 @@ export default {
             console.log('rodando o imagepicker...');
             const _this = this;
             const pickerOptions = {
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [4, 3],
                 quality: 1,
@@ -247,28 +228,6 @@ export default {
                     console.log('saida imagepicker ...', response);
                     console.log('uri imagepicker ...', response.uri);
                     _this.ativo.foto = response.uri;
-                    if (_this.hasFotoLibraryPermissions){
-                        console.log('pode usar files...');
-                        try {
-                            console.log('enviando foto via api...');
-                            const myoptions = {
-                                httpMethod: 'POST',
-                                uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-                                fieldName: 'file'
-                            };
-                            FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
-                                .then( (response) => {
-                                    console.log('response upload Ok ...', response);
-                                    _this.ativo.foto = { uri: response.headers.Location };
-                                }).catch( (error) => { 
-                                    console.log('error upload...', error);
-                                })
-                        } catch (error) {
-                            console.log('Error: ', error)
-                        }
-                    } else {
-                        console.log('não pode usar files...');
-                    }
                  })
                  .catch( e => {
                      console.log('erro no imagepicker > ', e);
@@ -288,7 +247,7 @@ export default {
                     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
                     fieldName: 'file'
                 };
-                FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, response.uri, myoptions)
+                FileSystem.uploadAsync(`http://192.168.0.20:8082/ativos/picture/${_this.ativo.id}`, _this.ativo.foto, myoptions)
                     .then( response => {
                         console.log('response foto upload ok...', response);
                     }).catch( (error) => { 
@@ -332,7 +291,51 @@ export default {
                 console.log("some error occurred", error);
                 this.isAppReady = true;
             }
-        }   
+        },
+        removeAtivo() {
+            Store.state.erro = '';
+            const _this = this;
+            Alert.alert(
+                'Confirmação',
+                'Deseja realmente remover Ativo?',
+                [
+                { 
+                    text: 'SIM', onPress: () => { _this.confirmaRemocao(); } 
+                }, 
+                { 
+                    text: 'NÃO', onPress: () => { console.log('Não faz nada...'); }
+                }, 
+                ]
+            );
+            
+        }, 
+        confirmaRemocao() {
+            try {
+                Store.dispatch('removerAtivo', {ativo: this.ativo})
+                .then(() => { 
+                    if (Store.state.erro != '') {
+                        console.log('erro > ', Store.state.erro);
+                        Toast.show({
+                            text:'Erro: ' + Store.state.erro,
+                            buttonText:'Ok', 
+                            position: 'bottom',
+                            duration: 3000
+                            })
+                    }else {
+                        console.log('Ativo removido com sucesso');
+                        Toast.show({
+                            text:'Ativo removido com sucesso',
+                            buttonText:'Ok', 
+                            position: 'bottom',
+                            duration: 2000
+                            })
+                    }  
+                }).catch(error => console.log('erro promise removerAtivo > ', error));
+                
+            } catch (error) {
+                console.log('não consegui remover Ativo ... ', error)
+            }
+        },
     }
 
 }

@@ -12,7 +12,8 @@ const state = {
     usuarios: [],
     erro: '', 
     ativos: [],
-    idUsuarioCriado: undefined
+    idUsuarioCriado: undefined,
+    idAtivoCriado: undefined
 }
 
 const actions = {
@@ -114,6 +115,39 @@ const actions = {
             commit('SETAR_ERRO', { erro })
             
         }
+    },
+    atualizarImagemAtivo: ( { commit }, {ativo} ) => {
+        console.log('action atualizarImagemAtivo...', ativo);
+        commit('ATUALIZAR_IMAGEM', {ativo})
+    },
+    criarAtivo: ({ commit }, {ativo}) => {
+        console.log('criarAtivo entrou')
+        return AtivoService.postAtivo(ativo)
+            .then((response) => {
+                console.log('url > ', response.headers.location);
+                var url_criada = response.headers.location.split('/');
+                const idAtivo = url_criada[4];
+                console.log('id > ', idAtivo);
+                commit('SETAR_ID_ATIVO', idAtivo);
+            })
+            .catch(erro => {
+                console.log('criarAtivo erro', erro);
+                commit('SETAR_ERRO', { erro })
+            })
+    }, 
+    removerAtivo: async ({commit}, {ativo}) => {
+        console.log('action removerAtivo...')
+        try {
+            const resp = await AtivoService.removeAtivo(ativo.id)
+                .then( () => {
+                    commit('REMOVER_ATIVO', { ativo });
+                }).catch( erro => {
+                    console.log('action removerAtivo error...', erro);
+                    commit('SETAR_ERRO', { erro });
+                })
+        } catch (erro) {
+            commit('SETAR_ERRO', { erro });
+        }
     }
 }
 
@@ -154,6 +188,23 @@ const mutations = {
     EDITAR_ATIVO: (state, ativo) => {
         const indice = state.ativos.findIndex( p => p.id === ativo.id)
         state.ativos.splice(indice, 1, ativo)
+    }, 
+    CRIAR_ATIVO: (state, { ativo }) => {
+        console.log('entrou mutation CRIAR_ATIVO ', ativo )
+        state.ativos.push(ativo)
+    },
+    SETAR_ID_ATIVO: (state, id) => {
+        console.log('entrou mutation SETAR_ID_ATIVO ', id)
+        state.idAtivoCriado = id
+    },
+    ATUALIZAR_IMAGEM: (state, ativo) => {
+        const indice = state.ativos.findIndex( p => p.id === ativo.id)
+        state.ativos.splice(indice, 1, ativo)
+    },
+    REMOVER_ATIVO: ( state, {ativo}) => {
+        console.log('mutation REMOVER_ATIVO...', ativo.id);
+        const indice = state.ativos.findIndex( p => p.id === ativo.id)
+        state.ativos.splice(indice, 1)
     }
 }
 

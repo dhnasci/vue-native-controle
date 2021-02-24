@@ -60,7 +60,7 @@
 <script>
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Picker, Toast  } from 'native-base';
+import { Container,  Content, Form, Item, Input, Label, Card, CardItem, Text, Body, Picker, Toast } from 'native-base';
 import Store from '../../store'
 
 export default {
@@ -116,7 +116,7 @@ export default {
         console.log('clicou no submit...', this.usuario);
         const st = Store;
         try {
-          Store.dispatch('criarUsuario', { usuario: this.usuario} )
+          Store.dispatch('criarUsuario', { usuario: this.usuario } )
            .then(() =>{
               Toast.show({
                 text:'Usuário criado com sucesso',
