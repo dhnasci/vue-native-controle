@@ -13,7 +13,17 @@ const state = {
     erro: '', 
     ativos: [],
     idUsuarioCriado: undefined,
-    idAtivoCriado: undefined
+    idAtivoCriado: undefined,
+    scanned: false,
+    ativoLido: '', // só o codigo
+    ativoScanned: undefined,  // tudo,
+    isCameraReady: false,
+    mostraAtivo: false
+}
+
+const getters = {
+    codigoAtivo: state => state.ativoLido,
+    ativoPorCodigo: state => state.ativoScanned
 }
 
 const actions = {
@@ -148,6 +158,51 @@ const actions = {
         } catch (erro) {
             commit('SETAR_ERRO', { erro });
         }
+    }, 
+    setarAtivoLido: ( {commit}, ativoLido ) => {
+        commit('SETAR_ATIVO_LIDO', ativoLido)
+    },
+    setScanned: ( {commit} ) => {
+        commit('SETAR_SCAN')
+    },
+    resetScanned: ({commit} ) => {
+        commit('RESETAR_SCAN')
+    },
+    lerAtivoPorCodigo: async ( {commit}, codigo ) => {
+        try {
+            const resp = await AtivoService.getAtivoPorCodigo(codigo)
+            commit('SETAR_ATIVO', { ativo: resp.data })
+        } catch (erro) {
+            commit('SETAR_ERRO', { erro })
+        }
+    },
+    getPorCentroDeCusto: async ( {commit}, centroCusto  ) => {
+        try {
+            const resp = await AtivoService.getAtivoPorCentroCusto(centroCusto)
+            commit('LISTAR_ATIVOS', { ativos: resp.data })
+        } catch (erro) {
+            commit('SETAR_ERRO', { erro })
+        }
+    },
+    getPorStatus: async ( {commit} , status  ) => {
+        try {
+            const resp = await AtivoService.getAtivoPorStatus(status)
+            commit('LISTAR_ATIVOS', { ativos: resp.data })
+        } catch (erro) {
+            commit('SETAR_ERRO', { erro })
+        }
+    },
+    zerarAtivo: ( {commit} ) => {
+        commit('ZERAR_ATIVO')
+    }, 
+    avisarCameraOk: ({commit} ) => {
+        commit('SETAR_CAMERA_OK')
+    },
+    mostrarAtivo: ({ commit }) => {
+		commit('MOSTRAR_ATIVO')
+	},
+    resetErro: ( {commit} ) => {
+        commit('RESET_ERRO')
     }
 }
 
@@ -175,7 +230,7 @@ const mutations = {
         state.usuarios.splice(indice, 1, usuario)
     }, 
     REMOVER_USUARIO: (state, {usuario}) => {
-        console.log('entrou mutation REMOVER_USUARIO ')
+        console.log('mutation REMOVER_USUARIO ')
         const indice = state.usuarios.findIndex( p => p.id === usuario.id)
         state.usuarios.splice(indice, 1)
     },
@@ -184,6 +239,10 @@ const mutations = {
     },
     SELECIONA_ATIVO: (state, ativo)=>{
         state.ativoSelecionado = ativo
+    },
+    SETAR_ATIVO: (state, { ativo })=>{
+        console.log('mutation SETAR_ATIVO ', ativo)
+        state.ativoScanned = ativo
     },
     EDITAR_ATIVO: (state, ativo) => {
         const indice = state.ativos.findIndex( p => p.id === ativo.id)
@@ -205,6 +264,27 @@ const mutations = {
         console.log('mutation REMOVER_ATIVO...', ativo.id);
         const indice = state.ativos.findIndex( p => p.id === ativo.id)
         state.ativos.splice(indice, 1)
+    }, 
+    SETAR_ATIVO_LIDO: (state, ativoLido) => {
+        state.ativoLido = ativoLido
+    },
+    SETAR_SCAN: (state) => {
+        state.scanned = true
+    },
+    RESETAR_SCAN: (state) => {
+        state.scanned = false
+    },
+    ZERAR_ATIVO: (state) => {
+        state.ativoLido = ''
+    },
+    SETAR_CAMERA_OK: (state) => {
+        state.isCameraReady = true;
+    },
+    MOSTRAR_ATIVO: ( state ) => {
+		state.mostraAtivo = true;
+	},
+    RESET_ERRO: (state) => {
+        state.erro = ''
     }
 }
 
@@ -212,6 +292,7 @@ const mutations = {
 const store = new Vuex.Store(
     {
         state,
+        getters,
         actions,
         mutations
     }

@@ -20,6 +20,18 @@ export default {
       console.log('getAtivoPorId AtivoService > ', id)
       return apiClient.get(`/ativos/${id}`)
     },
+    getAtivoPorCodigo(codigo) {
+      console.log('getAtivoPorCodigo AtivoService > ', codigo)
+      return apiClient.get(`/ativos/codigo/${codigo}`)
+    },
+    getAtivoPorCentroCusto(centroCusto) {
+      console.log('getAtivoPorCC AtivoService > ', centroCusto)
+      return apiClient.get(`/ativos/cc/${centroCusto}`)
+    },
+    getAtivoPorStatus(status) {
+      console.log('getAtivoPorStatus AtivoService > ', status)
+      return apiClient.get(`/ativos/status/${status}`)
+    },
     removeAtivo(id) {
       console.log('removeAtivo em ativo Service', id)
       return apiClient.delete(`/ativos/${id}`)

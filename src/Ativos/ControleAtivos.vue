@@ -8,7 +8,9 @@
         </view>
         <view class="filter-box">
           <view class="filter-box-row">
-            <image :style="{ marginRight:20 }" :source="require('./../../assets/search.png')" /> 
+            <touchable-opacity :on-press="handleCentroCusto">
+              <image :style="{ marginRight:20 }" :source="require('./../../assets/search.png')" /> 
+            </touchable-opacity>
             <text-input 
               :style="{
                 lineHeight: 16,
@@ -17,16 +19,21 @@
               }" v-model="centroDeCusto" /> 
           </view>
           <view class="filter-box-row">
-            <image :style="{ marginRight: 50}" :source="require('./../../assets/qr_code_black.png')" /> 
+            <touchable-opacity :on-press="() => 
+                { 
+                  this.props.navigation.navigate('LerCodigo');
+                }" >
+                <image :style="{ marginRight: 50}" :source="require('./../../assets/qr_code_black.png')" /> 
+            </touchable-opacity>
               <nb-picker
                 mode="dropdown"
                 :selectedValue="selecionado"
                 :onValueChange="callStatus"
                 >
-                <item label="ATIVO" value="ativo" />
-                <item label="EM MANUTENÇÃO" value="manutencao" />
-                <item label="BAIXADO" value="baixado" />
-                <item label="REMOVIDO" value="removido" />
+                <item label="ATIVO" value="ATIVO" />
+                <item label="EM MANUTENÇÃO" value="MANUTENCAO" />
+                <item label="BAIXADO" value="BAIXADO" />
+                <item label="REMOVIDO" value="REMOVIDO" />
               </nb-picker>
           </view>
         </view>
@@ -150,9 +157,7 @@ export default {
       st.dispatch('listarAtivos')
          .then(() => {
            _this.ativos = [];
-           
             _this.ativos = st.state.ativos;
-            console.log('ativos...', _this.ativos);
             _this.isReady = true;
          }).catch( error => {
            console.log('error no willFocus...', error);
@@ -181,6 +186,27 @@ export default {
       console.log('Controle Ativo Status ', value);
       console.log('Controle Ativo index ', index);
       this.selecionado = value;
+      const _this = this;
+      const st = Store;
+      Store.dispatch('getPorStatus', value)
+        .then(() => {
+          console.log('callStatus > ')
+          _this.ativos = st.state.ativos;
+        }).catch((error) => {
+          console.log('error callStatus > ', error)
+        })
+    },
+    handleCentroCusto() {
+      console.log('handleCentroCusto > ', this.centroDeCusto);
+      const _this = this;
+      const st = Store;
+      Store.dispatch('getPorCentroDeCusto', this.centroDeCusto)
+         .then(() => {
+           console.log('achei com sucesso')
+           _this.ativos = st.state.ativos;
+         }).catch((error) => {
+           console.log('deu erro...', error)
+         })
     },
     async loadFonts() {
       try {

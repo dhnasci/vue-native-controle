@@ -24,6 +24,7 @@ import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
 import EditarAtivo from './src/Ativos/EditarAtivo.vue'
 import CadastrarAtivo from './src/Ativos/CadastrarAtivo.vue'
+import LerCodigo from './src/Ativos/LerCodigo.vue'
 
 import {
   createAppContainer,
@@ -43,6 +44,7 @@ const DrawerNavigator = createDrawerNavigator(
     ControleUsuarios: ControleUsuarioScreen, 
     EditarUsuario: EditarUsuarioScreen,
     CadastrarUsuario: CadastrarUsuarioScreen,
+    LerCodigo: LerCodigo
   },
   {
     initialRouteName: 'Login',
