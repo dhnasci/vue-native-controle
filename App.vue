@@ -24,6 +24,7 @@ import SideBarScreen from './src/SideBar.vue'
 import ControleAtivos from './src/Ativos/ControleAtivos.vue'
 import EditarAtivo from './src/Ativos/EditarAtivo.vue'
 import CadastrarAtivo from './src/Ativos/CadastrarAtivo.vue'
+import DetalhesAtivo from './src/Ativos/DetalhesAtivo.vue'
 import LerCodigo from './src/Ativos/LerCodigo.vue'
 
 import {
@@ -40,6 +41,7 @@ const DrawerNavigator = createDrawerNavigator(
     Ativos: ControleAtivos,
     EditarAtivo: EditarAtivo,
     CadastrarAtivo: CadastrarAtivo,
+    DetalhesAtivo: DetalhesAtivo,
 		EsqueciSenha: EsqueciSenhaScreen,
     ControleUsuarios: ControleUsuarioScreen, 
     EditarUsuario: EditarUsuarioScreen,

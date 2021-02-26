@@ -1,5 +1,5 @@
 <template>
-    <view class="container">
+    <nb-container class="container">
         <view class="container-toolbar">
             <text class="text-color-login">Controle Bem</text>
         </view>
@@ -11,7 +11,7 @@
                 </nb-item>
                 <nb-item class="container-row-senha">
                     <text class="text-label-login">Senha </text>
-                    <nb-input secureTextEntry keyboard-type="numeric"  v-model="senha"  />
+                    <nb-input secureTextEntry  v-model="senha"  />
                 </nb-item>
                 <nb-item class="container-row-one-btn">
                     <touchable-opacity class="button-blue" :on-press="doLogin">
@@ -25,12 +25,13 @@
                 </nb-item>
             </nb-form>
         </nb-content>
-    </view>
+    </nb-container>
 </template>
 
 <script>
 
-import { Container, Content, Form, Item, Input } from "native-base";
+import { Container, Content, Form, Item, Input, Toast } from "native-base";
+import Store from '../../store'
 
 export default {
     props: {
@@ -43,7 +44,8 @@ export default {
         Content, 
         Form, 
         Item, 
-        Input 
+        Input,
+        Toast
     },
     data () {
         return { 
@@ -61,9 +63,44 @@ export default {
     methods: {
         doLogin () {
             console.log("vue-controle-bem > Do Login pressed");
-            console.log("vue-controle-bem > ", this.usuario);
-            console.log("vue-controle-bem > ", this.senha);
-            this.navigation.navigate("Home");
+            console.log("login > ", this.usuario);
+            console.log("senha > ", this.senha);
+            if (this.usuario == undefined || this.senha == undefined) {
+                Toast.show({
+                    text:'login ou senha não preenchida',
+                    buttonText:'Ok', 
+                    position: 'bottom',
+                    duration: 3000
+                    })
+
+            } else {
+                const credential = {
+                    login: this.usuario,
+                    senha: this.senha
+                }
+                const _this = this;
+                const st = Store;
+                Store.dispatch('fazerLogin',  {credential})
+                .then(() => {
+                    if (st.state.autenticado){
+                        _this.navigation.navigate("Home");
+                    } else {
+                        console.log(st.state.erro);
+                        Toast.show({
+                                text:'Login não autenticado',
+                                buttonText:'Ok', 
+                                position: 'bottom',
+                                duration: 3000
+                                })
+                    }
+                }).catch((erro) => {
+                    console.log('Erro no login ', erro)
+                    
+                })
+            }
+            
+            
+            
         },
         doEsqueciSenha() {
             console.log("vue-controle-bem > Do Esqueci Senha");
@@ -79,6 +116,7 @@ export default {
         margin-bottom: 120px;
         width: 250px;
         height: 360px;
+        min-height: 300px;
         background-color: #E5E5EF;
         margin-left: 55px;
         border-radius: 10px;

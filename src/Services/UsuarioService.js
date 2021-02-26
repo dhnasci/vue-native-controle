@@ -27,6 +27,10 @@ export default {
     putUsuario(usuario) {
       console.log('edita usuario no UsuarioService > ', usuario)
       return apiClient.put(`/usuarios/${usuario.id}`, usuario)
+    },
+    getLogin(credential) {
+      console.log('getLogin ...', credential)
+      return apiClient.get(`/usuarios/login/${credential.login}/${credential.senha}`)
     }
 
 }

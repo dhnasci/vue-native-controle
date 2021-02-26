@@ -6,10 +6,12 @@
             <text style="font-family: Roboto; font-style: normal; font-weight: bold; font-size: 18; line-height: 21; margin-bottom: 10;">
                 Leitura do código de barras </text>
             </view>
-            <camera class="caixaCamera" :type="type" :onCameraReady="verificarCamera" ref="minhaCamera"
-                :onBarCodeScanned="verificarScanned"
-                >
-            </camera>
+            <view class="alinhaCamera">
+                <camera class="caixaCamera" :type="type" :onCameraReady="verificarCamera" ref="minhaCamera"
+                    :onBarCodeScanned="verificarScanned"
+                    >
+                </camera>
+            </view>
              <nb-card transparent>
                 <nb-card-item  class="container-row">
                     <nb-button rounded success :on-press="doScanner" >
@@ -270,10 +272,17 @@ export default {
         flex-direction: row;
         justify-content: space-around;
         }
+    .alinhaCamera {
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+    }
     .caixaCamera {
+        
         width: 200px;
         height: 200px;
         background-color: transparent;
+        
         }
     .container-row {
         margin-top: 50px;

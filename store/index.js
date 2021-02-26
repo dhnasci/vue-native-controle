@@ -18,7 +18,9 @@ const state = {
     ativoLido: '', // só o codigo
     ativoScanned: undefined,  // tudo,
     isCameraReady: false,
-    mostraAtivo: false
+    mostraAtivo: false,
+    autenticado: false,
+    perfil: ''
 }
 
 const getters = {
@@ -101,6 +103,32 @@ const actions = {
             
         } catch (erro) {
             console.log('Erro ao buscar Id do Usuario > ', erro)
+        }
+
+    },
+    fazerLogin: async ( { commit }, {credential}) => {
+        console.log('action fazerLogin > ', credential);
+        try {
+            await UsuarioService.getLogin(credential)
+                .then((response) => {
+                    const usuario = response.data;
+                    if (usuario.login != 'nao.autenticado'){
+                        commit('SETAR_AUTENTICADO')
+                        commit('SETAR_PERFIL', usuario.perfil)
+                    } else {
+                        const erro1 = 'Erro: Senha não confere'
+                        commit('SETAR_ERRO', {erro1});
+                        commit('RESETAR_AUTENTICADO')
+                    }
+
+                }).catch( erro => {
+                    console.log('erro no Login ', erro)
+                    commit('SETAR_ERRO', {erro});
+                })
+              
+
+        } catch (error) {
+            
         }
 
     },
@@ -233,6 +261,18 @@ const mutations = {
         console.log('mutation REMOVER_USUARIO ')
         const indice = state.usuarios.findIndex( p => p.id === usuario.id)
         state.usuarios.splice(indice, 1)
+    },
+    SETAR_AUTENTICADO: (state) => {
+        console.log('mutation SETAR_AUTENTICADO')
+        state.autenticado = true
+    },
+    RESETAR_AUTENTICADO: (state) => {
+        console.log('mutation RESETAR_AUTENTICADO')
+        state.autenticado = false
+    },
+    SETAR_PERFIL: (state, perfil) => {
+        console.log('Mutation SETAR_PERFIL ', perfil)
+        state.perfil = perfil
     },
     LISTAR_ATIVOS: ( state, {ativos}) => {
         state.ativos = ativos

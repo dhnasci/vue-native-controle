@@ -21,11 +21,20 @@
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Resumo*</nb-label>
-                <nb-input v-model="ativo.resumo" />
+                <nb-input 
+                    multiline 
+                    :numberOfLines="3" 
+                    v-model="ativo.resumo" 
+                    textBreakStrategy="balanced" />
             </nb-item>
             <nb-item inlineLabel>
                 <nb-label>Descrição*</nb-label>
-                <nb-textarea :rowSpan="3" bordered placeholder="Descreva mais detalhes..." v-model="ativo.descricao" />
+                <nb-input 
+                    multiline 
+                    :numberOfLines="4" 
+                    placeholder="Descreva mais detalhes..." 
+                    v-model="ativo.descricao"
+                    textBreakStrategy="balanced" />
             </nb-item>
              <nb-item inlineLabel disabled>
                 <nb-label>Valor* R$</nb-label>
@@ -43,7 +52,6 @@
             <nb-item inlineLabel>
                 <nb-label>Fornecedor</nb-label>
                 <nb-input v-model="ativo.fornecedor" disabled/>
-            
                
             </nb-item>
            
@@ -136,13 +144,6 @@ export default {
         },
         ativoSelect: Store.state.ativoSelecionado,
       }
-    },
-    computed: {
-        valorConvertido() {
-            const val = ativo.valor.toString();
-            console.log('valor... ', val);
-            return val;
-        }
     },
     created() {
         this.loadFonts();

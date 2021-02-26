@@ -42,7 +42,11 @@
             Controle de Ativos </text>
               <touchable-opacity :on-press="() => 
                 { 
-                  this.props.navigation.navigate('CadastrarAtivo');
+                  if (getPermissao())
+                    this.props.navigation.navigate('CadastrarAtivo');
+                  else {
+                    mostraMensagem('Não tem permissão para adicionar Ativo!');
+                  }
                 }" >
                 <image :source="require('../../assets/add_box.png')" /> 
               </touchable-opacity>
@@ -91,7 +95,11 @@
                             <touchable-opacity :on-press="() => 
                               { 
                                 editarAtivo(ativo); 
-                                this.props.navigation.navigate('EditarAtivo');
+                                if (getPermissao()){
+                                  this.props.navigation.navigate('EditarAtivo');
+                                } else {
+                                  this.props.navigation.navigate('DetalhesAtivo');
+                                }
                               }" >
                               <image :source="require('../../assets/loupe.png')" /> 
                             </touchable-opacity>
@@ -111,7 +119,7 @@
 
 import Navbar from './../Navbar.vue'
 import * as Font from 'expo-font';
-import { Picker, Container, List, ListItem, Card, CardItem, Text, Body } from "native-base";
+import { Picker, Container, List, ListItem, Card, CardItem, Text, Body, Toast } from "native-base";
 import Store from '../../store'
 
 export default {
@@ -133,7 +141,8 @@ export default {
     Body,
     Container,
     List,
-    ListItem
+    ListItem,
+    Toast
   },
   props: { 
     navigation: {
@@ -222,6 +231,22 @@ export default {
         console.log("some error occured", error);
         this.isAppReady = true;
       }
+    },
+    getPermissao() {
+      const myPerfil = Store.state.perfil;
+      console.log('getPermissao - perfil no Criar... ', myPerfil );
+      if (myPerfil == 'Administrador' || myPerfil == 'Controlador')
+        return true
+      else 
+        return false 
+    },
+    mostraMensagem(msg){
+      Toast.show({
+        text: msg,
+        buttonText:'Ok', 
+        position: 'bottom',
+        duration: 3000
+        })
     }
   }
 }
